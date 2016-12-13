@@ -4,11 +4,16 @@
 \alias{candidate_local}
 \title{Download data on the candidates' background in local elections}
 \usage{
-candidate_local(year)
+candidate_local(year, ascii = FALSE, encoding = "windows-1252")
 }
 \arguments{
-\item{year}{Election year. For this function, onlye the years of 1996, 2000, 2004, 2008, and 2012
+\item{year}{Election year. For this function, onlye the years of 1996, 2000, 2004, 2008, 2012 and 2016
 are available.}
+
+\item{ascii}{(\code{logical}). Should the text be transformed from Latin-1 to ASCII format?}
+
+\item{encoding}{Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+when \code{ascii = TRUE}.}
 }
 \value{
 \code{candidate_local()} returns a \code{data.frame} with the following variables:
@@ -61,8 +66,8 @@ are available.}
   \item DESPESA_MAX_CAMPANHA: Maximum expenditure campaign declared by the party to that position. Values in Reais.
   \item COD_SIT_TOT_TURNO: Candidate's totalization status code in that election round.
   \item DESC_SIT_TOT_TURNO: Candidate's totalization status description in that round.
-  \item CODIGO_COR_RACA: Candidate's color/race code (self-declaration, only for 2014 election).
-  \item DESCRICAO_COR_RACA: Candidate's color/race description (self-declaration, only for 2014 election).
+  \item CODIGO_COR_RACA: Candidate's color/race code (self-declaration, only for 2016 election).
+  \item DESCRICAO_COR_RACA: Candidate's color/race description (self-declaration, only for 2016 election).
   \item EMAIL_CANDIDATO: Candidate's e-mail adress (only for 2014 election).
 }
 }

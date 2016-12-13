@@ -6,8 +6,13 @@
 #'
 #' @note For the elections prior to 2000, some information can be incomplete.
 #'
-#' @param year Election year. For this function, only the years 1996, 2000, 2004, 2008, and 2012
+#' @param year Election year. For this function, only the years 1996, 2000, 2004, 2008, 2012, and 2016
 #' are available.
+#'
+#' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
+#'
+#' @param encoding Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+#' when \code{ascii = TRUE}.
 #'
 #' @return \code{vote_mun_zone_local()} returns a \code{data.frame} with the following variables:
 #'
@@ -39,6 +44,7 @@
 #'   \item NOME_COLIGACAO: COalition name.
 #'   \item COMPOSICAO_LEGENDA: Coalition's composition.
 #'   \item TOTAL_VOTOS: Total of votes.
+#'   \item TRANSITO: Electoral result outside the candidates' district? (N for no).
 #'  }
 #'
 #' @import utils
@@ -49,10 +55,11 @@
 #' df <- vote_mun_zone_local(2000)
 #' }
 
-vote_mun_zone_local <- function(year){
+vote_mun_zone_local <- function(year, ascii = FALSE, encoding = "windows-1252"){
 
 
   # Test the input
+  test_encoding(encoding)
   test_local_year(year)
 
   # Download the data
@@ -62,16 +69,16 @@ vote_mun_zone_local <- function(year){
   unzip(dados, exdir = paste0("./", year))
   unlink(dados)
 
-  cat("Processing the data...")
-
+  message("Processing the data...")
 
   # Clean the data
   setwd(as.character(year))
-  banco <- juntaDados()
+  banco <- juntaDados(encoding)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
   # Change variable names
+  if(year <= 2012){
     names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
                       "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
                       "CODIGO_CARGO", "NUMERO_CAND", "SQ_CANDIDATO", "NOME_CANDIDATO", "NOME_URNA_CANDIDATO",
@@ -79,8 +86,22 @@ vote_mun_zone_local <- function(year){
                       "DESC_SIT_CANDIDATO", "CODIGO_SIT_CAND_TOT", "DESC_SIT_CAND_TOT", "NUMERO_PARTIDO",
                       "SIGLA_PARTIDO", "NOME_PARTIDO", "SEQUENCIAL_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA",
                       "TOTAL_VOTOS")
+  
+  } else {
+      
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
+                      "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
+                      "CODIGO_CARGO", "NUMERO_CAND", "SQ_CANDIDATO", "NOME_CANDIDATO", "NOME_URNA_CANDIDATO",
+                      "DESCRICAO_CARGO", "COD_SIT_CAND_SUPERIOR", "DESC_SIT_CAND_SUPERIOR", "CODIGO_SIT_CANDIDATO",
+                      "DESC_SIT_CANDIDATO", "CODIGO_SIT_CAND_TOT", "DESC_SIT_CAND_TOT", "NUMERO_PARTIDO",
+                      "SIGLA_PARTIDO", "NOME_PARTIDO", "SEQUENCIAL_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA",
+                      "TOTAL_VOTOS", "TRANSITO")
+    
+    }
 
+  # Change to ascii
+  if(ascii == T) banco <- to_ascii(banco, encoding)
 
-  cat("Done.")
+  message("Done.\n")
   return(banco)
 }

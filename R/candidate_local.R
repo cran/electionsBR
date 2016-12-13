@@ -6,8 +6,13 @@
 #'
 #' @note For the elections prior to 2000, some information can be incomplete.
 #'
-#' @param year Election year. For this function, onlye the years of 1996, 2000, 2004, 2008, and 2012
+#' @param year Election year. For this function, onlye the years of 1996, 2000, 2004, 2008, 2012 and 2016
 #' are available.
+#'
+#' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
+#'
+#' @param encoding Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+#' when \code{ascii = TRUE}.
 #'
 #' @return \code{candidate_local()} returns a \code{data.frame} with the following variables:
 #'
@@ -59,8 +64,8 @@
 #'   \item DESPESA_MAX_CAMPANHA: Maximum expenditure campaign declared by the party to that position. Values in Reais.
 #'   \item COD_SIT_TOT_TURNO: Candidate's totalization status code in that election round.
 #'   \item DESC_SIT_TOT_TURNO: Candidate's totalization status description in that round.
-#'   \item CODIGO_COR_RACA: Candidate's color/race code (self-declaration, only for 2014 election).
-#'   \item DESCRICAO_COR_RACA: Candidate's color/race description (self-declaration, only for 2014 election).
+#'   \item CODIGO_COR_RACA: Candidate's color/race code (self-declaration, only for 2016 election).
+#'   \item DESCRICAO_COR_RACA: Candidate's color/race description (self-declaration, only for 2016 election).
 #'   \item EMAIL_CANDIDATO: Candidate's e-mail adress (only for 2014 election).
 #' }
 #'
@@ -72,10 +77,11 @@
 #' df <- candidate_local(2000)
 #' }
 
-candidate_local <- function(year){
+candidate_local <- function(year, ascii = FALSE, encoding = "windows-1252"){
 
 
   # Input tests
+  test_encoding(encoding)
   test_local_year(year)
 
   # Downloads the data
@@ -85,11 +91,11 @@ candidate_local <- function(year){
   unzip(dados, exdir = paste0("./", year))
   unlink(dados)
 
-  cat("Processing the data...")
+  message("Processing the data...")
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados()
+  banco <- juntaDados(encoding)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -108,7 +114,7 @@ candidate_local <- function(year){
                       "NOME_MUNICIPIO_NASCIMENTO", "DESPESA_MAX_CAMPANHA", "COD_SIT_TOT_TURNO",
                       "DESC_SIT_TOT_TURNO")
 
-  } else {
+  } else if(year == 2012) {
     names(banco) <-c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
                      "SIGLA_UF", "SIGLA_UE", "DESCRICAO_UE", "CODIGO_CARGO", "DESCRICAO_CARGO",
                      "NOME_CANDIDATO", "SEQUENCIAL_CANDIDATO", "NUMERO_CANDIDATO", "CPF_CANDIDATO",
@@ -121,8 +127,25 @@ candidate_local <- function(year){
                      "DESCRICAO_NACIONALIDADE", "SIGLA_UF_NASCIMENTO", "CODIGO_MUNICIPIO_NASCIMENTO",
                      "NOME_MUNICIPIO_NASCIMENTO", "DESPESA_MAX_CAMPANHA", "COD_SIT_TOT_TURNO",
                      "DESC_SIT_TOT_TURNO", "EMAIL_CANDIDATO")
+    
+  } else {
+    names(banco) <-c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
+                     "SIGLA_UF", "SIGLA_UE", "DESCRICAO_UE", "CODIGO_CARGO", "DESCRICAO_CARGO",
+                     "NOME_CANDIDATO", "SEQUENCIAL_CANDIDATO", "NUMERO_CANDIDATO", "CPF_CANDIDATO",
+                     "NOME_URNA_CANDIDATO", "COD_SITUACAO_CANDIDATURA", "DES_SITUACAO_CANDIDATURA",
+                     "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "CODIGO_LEGENDA", "SIGLA_LEGENDA",
+                     "COMPOSICAO_LEGENDA", "NOME_COLIGACAO", "CODIGO_OCUPACAO", "DESCRICAO_OCUPACAO",
+                     "DATA_NASCIMENTO", "NUM_TITULO_ELEITORAL_CANDIDATO", "IDADE_DATA_ELEICAO",
+                     "CODIGO_SEXO", "DESCRICAO_SEXO", "COD_GRAU_INSTRUCAO", "DESCRICAO_GRAU_INSTRUCAO",
+                     "CODIGO_ESTADO_CIVIL", "DESCRICAO_ESTADO_CIVIL", "CODIGO_COR_RACA", "DESCRICAO_COR_RACA",
+                     "CODIGO_NACIONALIDADE", "DESCRICAO_NACIONALIDADE", "SIGLA_UF_NASCIMENTO", 
+                     "CODIGO_MUNICIPIO_NASCIMENTO", "NOME_MUNICIPIO_NASCIMENTO", "DESPESA_MAX_CAMPANHA",
+                     "COD_SIT_TOT_TURNO", "DESC_SIT_TOT_TURNO", "EMAIL_CANDIDATO")
   }
-
-  cat("Done")
+  
+  # Change to ascii
+  if(ascii == T) banco <- to_ascii(banco, encoding)
+  
+  message("Done.\n")
   return(banco)
 }

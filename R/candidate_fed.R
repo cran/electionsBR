@@ -8,6 +8,11 @@
 #'
 #' @param year Election year (\code{integer}). For this function, only the years 1998, 2002, 2006, 2010, and 2014
 #' are available.
+#' 
+#' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
+#'
+#' @param encoding Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+#' when \code{ascii = TRUE}.
 #'
 #' @return \code{candidate_fed()} returns a \code{data.frame} with the following variables:
 #'
@@ -72,10 +77,11 @@
 #' df <- candidate_fed(2002)
 #' }
 
-candidate_fed <- function(year){
+candidate_fed <- function(year, ascii = FALSE, encoding = "windows-1252"){
 
 
   # Input tests
+  test_encoding(encoding)
   test_fed_year(year)
 
   # Download the data
@@ -85,11 +91,11 @@ candidate_fed <- function(year){
   unzip(dados, exdir = paste0("./", year))
   unlink(dados)
 
-  cat("Processing the data...")
+  message("Processing the data...")
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados()
+  banco <- juntaDados(encoding)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -122,7 +128,10 @@ candidate_fed <- function(year){
                       "SIGLA_UF_NASCIMENTO", "CODIGO_MUNICIPIO_NASCIMENTO", "NOME_MUNICIPIO_NASCIMENTO",
                       "DESPESA_MAX_CAMPANHA", "COD_SIT_TOT_TURNO", "DESC_SIT_TOT_TURNO", "EMAIL_CANDIDATO")
   }
-
-  cat("Done")
+  
+  # Change to ascii
+  if(ascii == T) banco <- to_ascii(banco, encoding)
+  
+  message("Done.\n")
   return(banco)
 }

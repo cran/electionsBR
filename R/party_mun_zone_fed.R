@@ -9,6 +9,11 @@
 #' @param year Election year. For this function, only the years 1998, 2002, 2006, 2010, and 2014
 #' are available.
 #'
+#' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
+#'
+#' @param encoding Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+#' when \code{ascii = TRUE}.
+#'
 #' @return \code{party_mun_zone_fed()} returns a \code{data.frame} with the following variables:
 #'
 #' \itemize{
@@ -47,10 +52,11 @@
 #' df <- party_mun_zone_fed(2002)
 #' }
 
-party_mun_zone_fed <- function(year){
+party_mun_zone_fed <- function(year, ascii = FALSE, encoding = "windows-1252"){
 
 
   # Test the input
+  test_encoding(encoding)
   test_fed_year(year)
 
   # Download the data
@@ -60,12 +66,11 @@ party_mun_zone_fed <- function(year){
   unzip(dados, exdir = paste0("./", year))
   unlink(dados)
 
-  cat("Processing the data...")
-
-
+  message("Processing the data...")
+  
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados()
+  banco <- juntaDados(encoding)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -74,17 +79,20 @@ party_mun_zone_fed <- function(year){
     names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
                       "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
                       "CODIGO_CARGO", "DESCRICAO_CARGO", "TIPO_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA",
-                      "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "QTDE_VOTOS_NOMINAIS",
+                      "SIGLA_PARTIDO", "NUMERO_PARTIDO", "NOME_PARTIDO", "QTDE_VOTOS_NOMINAIS",
                       "QTDE_VOTOS_LEGENDA", "SEQUENCIAL_LEGENDA")
 
   } else {
     names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
                       "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
                       "CODIGO_CARGO", "DESCRICAO_CARGO", "TIPO_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA",
-                      "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "QTDE_VOTOS_NOMINAIS",
+                      "SIGLA_PARTIDO", "NUMERO_PARTIDO", "NOME_PARTIDO", "QTDE_VOTOS_NOMINAIS",
                       "QTDE_VOTOS_LEGENDA", "TRANSITO", "SEQUENCIAL_LEGENDA")
   }
+  
+  # Change to ascii
+  if(ascii == T) banco <- to_ascii(banco, encoding)
 
-  cat("Done.")
+  message("Done.\n")
   return(banco)
 }

@@ -4,11 +4,16 @@
 \alias{party_mun_zone_local}
 \title{Download data on the polls by parties from local elections in Brazil}
 \usage{
-party_mun_zone_local(year)
+party_mun_zone_local(year, ascii = FALSE, encoding = "windows-1252")
 }
 \arguments{
-\item{year}{Election year. For this function, only the years 1996, 2000, 2004, 2008, and 2012
+\item{year}{Election year. For this function, only the years 1996, 2000, 2004, 2008, 2012, and 2016
 are available.}
+
+\item{ascii}{(\code{logical}). Should the text be transformed from Latin-1 to ASCII format?}
+
+\item{encoding}{Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+when \code{ascii = TRUE}.}
 }
 \value{
 \code{party_mun_zone_local()} returns a \code{data.frame} with the following variables:
@@ -38,6 +43,7 @@ are available.}
   \item QTDE_VOTOS_NOMINAIS: Total number of nominal votes that a party received in that city and zone.
   \item QTDE_VOTOS_LEGENDA: Total number of votes that a coalitions received in that city and zone.
   \item SEQUENCIAL_LEGENDA: Coalition's sequential number, generated internally by the electoral justice.
+  \item TRANSITO: Electoral result outside the candidates' district? (N for no).
 }
 }
 \description{

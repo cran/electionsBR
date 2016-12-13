@@ -6,8 +6,13 @@
 #'
 #' @note For the elections prior to 2000, some infomration can be incomplete.
 #'
-#' @param year Election year. For this function, only the years 1996, 2000, 2004, 2008, and 2012
+#' @param year Election year. For this function, only the years 1996, 2000, 2004, 2008, 2012 and 2016
 #' are available.
+#'
+#' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
+#'
+#' @param encoding Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+#' when \code{ascii = TRUE}.
 #'
 #' @return \code{legend_local()} returns a \code{data.frame} with the following variables:
 #'
@@ -43,10 +48,11 @@
 #' df <- legend_local(2000)
 #' }
 
-legend_local <- function(year){
+legend_local <- function(year, ascii = FALSE, encoding = "windows-1252"){
 
 
   # Test the input
+  test_encoding(encoding)
   test_local_year(year)
 
   # Download the data
@@ -56,11 +62,11 @@ legend_local <- function(year){
   unzip(dados, exdir = paste0("./", year))
   unlink(dados)
 
-  cat("Processing the data...")
+  message("Processing the data...")
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados()
+  banco <- juntaDados(encoding)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -69,8 +75,10 @@ legend_local <- function(year){
                       "SIGLA_UF", "SIGLA_UE", "NOME_MUNICIPIO", "CODIGO_CARGO", "DESCRICAO_CARGO",
                       "TIPO_LEGENDA", "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "SIGLA_COLIGACAO",
                       "NOME_COLIGACAO", "COMPOSICAO_COLIGACAO", "SEQUENCIAL_COLIGACAO")
+    
+  # Change to ascii
+  if(ascii == T) banco <- to_ascii(banco, encoding)
 
-
-  cat("Done.")
+  message("Done.\n")
   return(banco)
 }

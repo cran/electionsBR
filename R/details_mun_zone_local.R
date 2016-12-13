@@ -6,8 +6,13 @@
 #'
 #' @note For the elections prior to 2000, some information can be incomplete.
 #'
-#' @param year Election year. For this function, only the years 1996, 2000, 2004, 2008, and 2012
+#' @param year Election year. For this function, only the years 1996, 2000, 2004, 2008, 2012 and 2016
 #' are available.
+#'
+#' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
+#'
+#' @param encoding Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+#' when \code{ascii = TRUE}.
 #'
 #' @return \code{details_mun_zone_local()} returns a \code{data.frame} with the following variables:
 #'
@@ -40,6 +45,8 @@
 #'   \item QTD_VOTOS_ANULADOS_APU_SEP: Amount of canceled votes and votes counted separately in that city and zone. This number reflects the votes coming from some ballot box that is sub-judice. They are not yet valid votes or null until the decision of the electoral court.
 #'   \item DATA_ULT_TOTALIZACAO: Date of the last totalization in that city and zone.
 #'   \item HORA_ULT_TOTALIZACAO: Time of the last totalization in that city and zone.
+#'   \item TRANSITO: Electoral result outside the candidates' district? (N for no).
+#'   \item QTD_VOTOS_ANULADOS: Total number of votes invalidated by Brazilian Electoral Supreme Court.
 #' }
 #'
 #' @import utils
@@ -50,10 +57,11 @@
 #' df <- details_mun_zone_local(2000)
 #' }
 
-details_mun_zone_local <- function(year){
+details_mun_zone_local <- function(year, ascii = FALSE, encoding = "windows-1252"){
 
 
   # Input tests
+  test_encoding(encoding)
   test_local_year(year)
 
   # Downloads the data
@@ -63,15 +71,16 @@ details_mun_zone_local <- function(year){
   unzip(dados, exdir = paste0("./", year))
   unlink(dados)
 
-  cat("Processing the data...")
+  message("Processing the data...")
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados()
+  banco <- juntaDados(encoding)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
   # Changes variables names
+  if(year <= 2012){
      names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
                        "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
                        "CODIGO_CARGO", "DESCRICAO_CARGO", "QTD_APTOS", "QTD_SECOES", "QTD_SECOES_AGREGADAS",
@@ -79,7 +88,29 @@ details_mun_zone_local <- function(year){
                        "QTD_VOTOS_NOMINAIS", "QTD_VOTOS_BRANCOS", "QTD_VOTOS_NULOS", "QTD_VOTOS_LEGENDA",
                        "QTD_VOTOS_ANULADOS_APU_SEP", "DATA_ULT_TOTALIZACAO", "HORA_ULT_TOTALIZACAO")
 
+  } else if(year == 2014) {
+    
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
+                      "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
+                      "CODIGO_CARGO", "DESCRICAO_CARGO", "QTD_APTOS", "QTD_SECOES", "QTD_SECOES_AGREGADAS",
+                      "QTD_APTOS_TOT", "QTD_SECOES_TOT", "QTD_COMPARECIMENTO", "QTD_ABSTENCOES",
+                      "QTD_VOTOS_NOMINAIS", "QTD_VOTOS_BRANCOS", "QTD_VOTOS_NULOS", "QTD_VOTOS_LEGENDA",
+                      "QTD_VOTOS_ANULADOS_APU_SEP", "DATA_ULT_TOTALIZACAO", "HORA_ULT_TOTALIZACAO",
+                      "TRANSITO")
+  } else {
+    
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
+                      "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
+                      "CODIGO_CARGO", "DESCRICAO_CARGO", "QTD_APTOS", "QTD_SECOES", "QTD_SECOES_AGREGADAS",
+                      "QTD_APTOS_TOT", "QTD_SECOES_TOT", "QTD_COMPARECIMENTO", "QTD_ABSTENCOES",
+                      "QTD_VOTOS_NOMINAIS", "QTD_VOTOS_BRANCOS", "QTD_VOTOS_NULOS", "QTD_VOTOS_LEGENDA",
+                      "QTD_VOTOS_ANULADOS_APU_SEP", "DATA_ULT_TOTALIZACAO", "HORA_ULT_TOTALIZACAO",
+                      "TRANSITO", "QTD_VOTOS_ANULADOS")
+  }
+  
+  # Change to ascii
+  if(ascii == T) banco <- to_ascii(banco, encoding)
 
-  cat("Done.")
+  message("Done.\n")
   return(banco)
 }

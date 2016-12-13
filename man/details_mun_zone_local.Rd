@@ -4,11 +4,16 @@
 \alias{details_mun_zone_local}
 \title{Download data on the verification of local elections in Brazil}
 \usage{
-details_mun_zone_local(year)
+details_mun_zone_local(year, ascii = FALSE, encoding = "windows-1252")
 }
 \arguments{
-\item{year}{Election year. For this function, only the years 1996, 2000, 2004, 2008, and 2012
+\item{year}{Election year. For this function, only the years 1996, 2000, 2004, 2008, 2012 and 2016
 are available.}
+
+\item{ascii}{(\code{logical}). Should the text be transformed from Latin-1 to ASCII format?}
+
+\item{encoding}{Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+when \code{ascii = TRUE}.}
 }
 \value{
 \code{details_mun_zone_local()} returns a \code{data.frame} with the following variables:
@@ -42,6 +47,8 @@ are available.}
   \item QTD_VOTOS_ANULADOS_APU_SEP: Amount of canceled votes and votes counted separately in that city and zone. This number reflects the votes coming from some ballot box that is sub-judice. They are not yet valid votes or null until the decision of the electoral court.
   \item DATA_ULT_TOTALIZACAO: Date of the last totalization in that city and zone.
   \item HORA_ULT_TOTALIZACAO: Time of the last totalization in that city and zone.
+  \item TRANSITO: Electoral result outside the candidates' district? (N for no).
+  \item QTD_VOTOS_ANULADOS: Total number of votes invalidated by Brazilian Electoral Supreme Court.
 }
 }
 \description{
