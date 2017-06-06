@@ -8,11 +8,18 @@
 #'
 #' @param year Election year. For this function, only the years 1996, 2000, 2004, 2008, 2012 and 2016
 #' are available.
+#' 
+#' @param uf Federation Unit acronym (\code{character vector}).
 #'
 #' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
 #'
-#' @param encoding Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+#' @param encoding Data original encoding (defaults to 'Latin-1'). This can be changed to avoid errors
 #' when \code{ascii = TRUE}.
+#' 
+#' @param export (\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?
+#'
+#' @details If export is set to \code{TRUE}, the downloaded data is saved as .dta and .sav
+#'  files in the current directory.
 #'
 #' @return \code{details_mun_zone_local()} returns a \code{data.frame} with the following variables:
 #'
@@ -49,6 +56,8 @@
 #'   \item QTD_VOTOS_ANULADOS: Total number of votes invalidated by Brazilian Electoral Supreme Court.
 #' }
 #'
+#' @seealso \code{\link{details_mun_zone_fed}} for federal elections in Brazil.
+#'
 #' @import utils
 #' @importFrom magrittr "%>%"
 #' @export
@@ -57,12 +66,13 @@
 #' df <- details_mun_zone_local(2000)
 #' }
 
-details_mun_zone_local <- function(year, ascii = FALSE, encoding = "windows-1252"){
+details_mun_zone_local <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
 
 
   # Input tests
   test_encoding(encoding)
   test_local_year(year)
+  uf <- test_uf(uf)
 
   # Downloads the data
   dados <- tempfile()
@@ -75,7 +85,7 @@ details_mun_zone_local <- function(year, ascii = FALSE, encoding = "windows-1252
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados(encoding)
+  banco <- juntaDados(uf, encoding)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -110,6 +120,9 @@ details_mun_zone_local <- function(year, ascii = FALSE, encoding = "windows-1252
   
   # Change to ascii
   if(ascii == T) banco <- to_ascii(banco, encoding)
+  
+  # Export
+  if(export) export_data(banco)
 
   message("Done.\n")
   return(banco)

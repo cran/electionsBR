@@ -4,16 +4,21 @@
 \alias{details_mun_zone_fed}
 \title{Download data on the verification of federal elections in Brazil}
 \usage{
-details_mun_zone_fed(year, ascii = FALSE, encoding = "windows-1252")
+details_mun_zone_fed(year, uf = "all", ascii = FALSE,
+  encoding = "Latin-1", export = FALSE)
 }
 \arguments{
 \item{year}{Election year. For this function, only the years 1998, 2002, 2006, 2010, and 2014
 are available.}
 
+\item{uf}{Federation Unit acronym (\code{character vector}).}
+
 \item{ascii}{(\code{logical}). Should the text be transformed from Latin-1 to ASCII format?}
 
-\item{encoding}{Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+\item{encoding}{Data original encoding (defaults to 'Latin-1'). This can be changed to avoid errors
 when \code{ascii = TRUE}.}
+
+\item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
 }
 \value{
 \code{details_mun_zone_fed()} returns a \code{data.frame} with the following variables:
@@ -55,6 +60,10 @@ when \code{ascii = TRUE}.}
 disaggregated by town and electoral zone. The function returns a \code{data.frame} where each observation
 corresponds to a town/zone.
 }
+\details{
+If export is set to \code{TRUE}, the downloaded data is saved as .dta and .sav
+ files in the current directory.
+}
 \note{
 For the elections prior to 2002, some information can be incomplete. For the 2014 election, one more variable is available.
 }
@@ -63,4 +72,6 @@ For the elections prior to 2002, some information can be incomplete. For the 201
 df <- details_mun_zone_fed(2002)
 }
 }
-
+\seealso{
+\code{\link{details_mun_zone_local}} for local elections in Brazil.
+}

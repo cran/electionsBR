@@ -9,12 +9,19 @@
 #' @param year Election year (\code{integer}). For this function, only the years 1998, 2002, 2006, 2010, and 2014
 #' are available.
 #' 
+#' @param uf Federation Unit acronym (\code{character vector}).
+#' 
 #' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
 #'
-#' @param encoding Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
+#' @param encoding Data original encoding (defaults to 'Latin-1'). This can be changed to avoid errors
 #' when \code{ascii = TRUE}.
+#' 
+#' @param export (\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?
 #'
-#' @return \code{candidate_fed()} returns a \code{data.frame} with the following variables:
+#' @details If export is set to \code{TRUE}, the downloaded data is saved as .dta and .sav
+#'  files in the current directory.
+#'
+#' @return \code{candidate_fed()} returns a \code{tbl, data.frame} with the following variables:
 #'
 #' \itemize{
 #'   \item DATA_GERACAO: Generation date of the file (when the data was collected).
@@ -23,7 +30,7 @@
 #'   \item NUM_TURNO: Round number.
 #'   \item DESCRICAO_ELEICAO: Description of the election.
 #'   \item SIGLA_UF: Units of the Federation's acronym in which occurred the election.
-#'   \item SIGLA_UE: Units of the Federation's acronym (In case of major election is the FU's
+#'   \item SIGLA_UE: Units of the Federation's acronym (In case of major election is the FU's 
 #'   acronym in which the candidate runs for (text) and in case of municipal election is the
 #'   municipal's Supreme Electoral Court code (number)). Assume the special values BR, ZZ and
 #'   VT to designate, respectively, Brazil, Overseas and Absentee Ballot.
@@ -68,6 +75,8 @@
 #'   \item DESCRICAO_COR_RACA: Candidate's color/race description (self-declaration, only for 2014 election).
 #'   \item EMAIL_CANDIDATO: Candidate's e-mail adress (only for 2014 election).
 #' }
+#' 
+#' @seealso \code{\link{candidate_local}} for local elections in Brazil.
 #'
 #' @import utils
 #' @importFrom magrittr "%>%"
@@ -77,12 +86,13 @@
 #' df <- candidate_fed(2002)
 #' }
 
-candidate_fed <- function(year, ascii = FALSE, encoding = "windows-1252"){
+candidate_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
 
 
   # Input tests
   test_encoding(encoding)
   test_fed_year(year)
+  uf <- test_uf(uf)
 
   # Download the data
   dados <- tempfile()
@@ -95,7 +105,7 @@ candidate_fed <- function(year, ascii = FALSE, encoding = "windows-1252"){
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados(encoding)
+  banco <- juntaDados(uf, encoding)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -130,7 +140,10 @@ candidate_fed <- function(year, ascii = FALSE, encoding = "windows-1252"){
   }
   
   # Change to ascii
-  if(ascii == T) banco <- to_ascii(banco, encoding)
+  if(ascii) banco <- to_ascii(banco, encoding)
+  
+  # Export
+  if(export) export_data(banco)
   
   message("Done.\n")
   return(banco)
