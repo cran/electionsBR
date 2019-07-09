@@ -10,6 +10,10 @@
 #' are available.
 #' 
 #' @param uf Federation Unit acronym (\code{character} vector).
+#' 
+#' @param br_archive In the TSE's data repository, some results can be obtained for the whole country by loading a single
+#' within a single file by setting this argument to \code{TRUE} (may not work in for some elections and, in 
+#' other, it recoverns only electoral data for presidential elections, absent in other files).
 #'
 #' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
 #'
@@ -49,13 +53,14 @@
 #' df <- seats_fed(2000)
 #' }
 
-seats_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
+seats_fed <- function(year, uf = "all",  br_archive = FALSE, ascii = FALSE, encoding = "latin1", export = FALSE){
   
   
   # Input tests
   test_encoding(encoding)
   test_fed_year(year)
   uf <- test_uf(uf)
+  test_br(br_archive)
   
   # Download the data
   dados <- tempfile()
@@ -68,14 +73,22 @@ seats_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", exp
   
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados(uf, encoding)
+  banco <- juntaDados(uf, encoding, br_archive)
   setwd("..")
   unlink(as.character(year), recursive = T)
   
   # Change variable names
-  names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "DESCRICAO_ELEICAO",
-                    "SIGLA_UF", "SIGLA_UE", "NOME_UE", "CODIGO_CARGO", "DESCRICAO_CARGO",
-                    "QTDE_VAGAS")
+  if(year < 2014){
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "DESCRICAO_ELEICAO",
+                      "SIGLA_UF", "SIGLA_UE", "NOME_UE", "CODIGO_CARGO", "DESCRICAO_CARGO",
+                      "QTDE_VAGAS")
+  }else{
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "COD_TIPO_ELEICAO", 
+                      "NOME_TIPO_ELEICAO", "COD_ELEICAO", "DESCRICAO_ELEICAO", 
+                      "DATA_ELEICAO", "DATA_POSSE", "SIGLA_UF", "SIGLA_UE", "NOME_UE",        
+                      "CODIGO_CARGO", "DESCRICAO_CARGO", "QTDE_VAGAS" )
+  }
+
   
   # Change to ascii
   if(ascii) banco <- to_ascii(banco, encoding)

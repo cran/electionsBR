@@ -25,10 +25,10 @@ library(electionsBR)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  # Get presidential electoral results by municipality in tidy format
-#  pres_mun <- president_mun_vote(2010, perc = TRUE)
+#  pres_mun <- president_mun_vote(2010, prop = TRUE)
 #  
 #  # Get presidential electoral results by state in tidy format
-#  pres_st <- president_state_vote(2010, perc = TRUE)
+#  pres_st <- president_state_vote(2010, prop = TRUE)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  # Get data on candidates running in local elections
@@ -72,7 +72,7 @@ parties_br()
 #  df <- candidate_fed(2010, ascii = TRUE)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  df <- candidate_fed(2010, ascii = TRUE, encoding = "latin1")
+#  df <- candidate_fed(2010, ascii = TRUE, encoding = "Latin-1")
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  # Electoral results for the 2010 federal elections in Sao Paulo (SP)

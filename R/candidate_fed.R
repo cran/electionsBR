@@ -4,22 +4,27 @@
 #' federal elections in Brazil. The function returns a \code{data.frame} where each observation
 #' corresponds to a candidate.
 #'
-#' @note For the elections prior to 2002, some information can be incomplete. For the 2014 elections, three more variables are available.
+#' @note For the elections prior to 2002, some information can be incomplete. For the 2014 and 2018 elections, more variables are available.
 #'
-#' @param year Election year (\code{integer}). For this function, only the years 1998, 2002, 2006, 2010, and 2014
+#' @param year Election year (\code{integer}). For this function, only the years 1994, 1998, 2002, 2006, 2010, 2014, and 2018
 #' are available.
 #' 
 #' @param uf Federation Unit acronym (\code{character vector}).
 #' 
-#' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
+#' @param br_archive In the TSE's data repository, some results can be obtained for the whole country by loading a single
+#' within a single file by setting this argument to \code{TRUE} (may not work in for some elections and, in 
+#' other, it recoverns only electoral data for presidential elections, absent in other files).
+#' 
+#' @param ascii (\code{logical}). Should the text be transformed from latin1 to ASCII format?
 #'
-#' @param encoding Data original encoding (defaults to 'Latin-1'). This can be changed to avoid errors
+#' @param encoding Data original encoding (defaults to 'latin1'). This can be changed to avoid errors
 #' when \code{ascii = TRUE}.
 #' 
 #' @param export (\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?
 #'
 #' @details If export is set to \code{TRUE}, the downloaded data is saved as .dta and .sav
 #'  files in the current directory.
+#'  
 #'
 #' @return \code{candidate_fed()} returns a \code{tbl, data.frame} with the following variables:
 #'
@@ -71,10 +76,31 @@
 #'   \item DESPESA_MAX_CAMPANHA: Maximum expenditure campaign declared by the party to that position. Values in Reais.
 #'   \item COD_SIT_TOT_TURNO: Candidate's totalization status code in that election round.
 #'   \item DESC_SIT_TOT_TURNO: Candidate's totalization status description in that round.
-#'   \item CODIGO_COR_RACA: Candidate's color/race code (self-declaration, only for 2014 election).
-#'   \item DESCRICAO_COR_RACA: Candidate's color/race description (self-declaration, only for 2014 election).
-#'   \item EMAIL_CANDIDATO: Candidate's e-mail adress (only for 2014 election).
+#'   \item CODIGO_COR_RACA: Candidate's color/race code (self-declaration, only from 2014 election).
+#'   \item DESCRICAO_COR_RACA: Candidate's color/race description (self-declaration, only from 2014 election).
+#'   \item EMAIL_CANDIDATO: Candidate's e-mail adress (only from 2014 election).
 #' }
+#' 
+#' From 2018 on, some new variables are also available:
+#' \itemize{
+#'   \item COD_TIPO_ELEICAO: Election type code.
+#'   \item NOME_TIPO_ELEICAO: Election type.
+#'   \item COD_ELEICAO: Election code.
+#'   \item DATA_ELEICAO: Election date.
+#'   \item ABRANGENCIA: Election scope.
+#'   \item NOME_SOCIAL_CANDIDATO: Candidate's social name.
+#'   \item EMAIL_CANDIDATO: Candidate's e-mail.
+#'   \item COD_DETALHE_SITUACAO_CAND: Details on the status of a candidate's elegibility.
+#'   \item DES_DETALHE_SITUACAO_CAND: Description of a candidate's elegibility.
+#'   \item TIPO_AGREMIACAO: Type of partisan ticket (electoral coalition or single party).
+#'   \item IDADE_DATA_POSSE: Candidate's age at the first day in the office.
+#'   \item CODIGO_COR_RACA: Candidates' skin color code.
+#'   \item DESCRICAO_COR_RACA: Candidates' skin color.
+#'   \item SITUACAO_REELEICAO: Candidate's reelection status (running for reelection or not).
+#'   \item SITUACAO_DECLARAR_BENS: Candidate's financial disclosure.
+#'   \item NUMERO_PROTOCOLO_CANDIDATURA: Candidate's electoral protocol number.
+#'   \item NUMERO_PROCESSO: Candidate's electoral process.
+#'}
 #' 
 #' @seealso \code{\link{candidate_local}} for local elections in Brazil.
 #'
@@ -86,13 +112,14 @@
 #' df <- candidate_fed(2002)
 #' }
 
-candidate_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
+candidate_fed <- function(year, uf = "all", br_archive = FALSE, ascii = FALSE, encoding = "latin1", export = FALSE){
 
 
   # Input tests
   test_encoding(encoding)
   test_fed_year(year)
   uf <- test_uf(uf)
+  test_br(br_archive)
 
   # Download the data
   dados <- tempfile()
@@ -105,7 +132,7 @@ candidate_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1",
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados(uf, encoding)
+  banco <- juntaDados(uf, encoding, br_archive)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -124,19 +151,22 @@ candidate_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1",
                       "NOME_MUNICIPIO_NASCIMENTO", "DESPESA_MAX_CAMPANHA", "COD_SIT_TOT_TURNO",
                       "DESC_SIT_TOT_TURNO")
 
-  } else {
-    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
-                      "SIGLA_UF", "SIGLA_UE", "DESCRICAO_UE", "CODIGO_CARGO", "DESCRICAO_CARGO",
-                      "NOME_CANDIDATO", "SEQUENCIAL_CANDIDATO", "NUMERO_CANDIDATO", "CPF_CANDIDATO",
-                      "NOME_URNA_CANDIDATO", "COD_SITUACAO_CANDIDATURA", "DES_SITUACAO_CANDIDATURA",
-                      "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "CODIGO_LEGENDA", "SIGLA_LEGENDA",
-                      "COMPOSICAO_LEGENDA", "NOME_COLIGACAO", "CODIGO_OCUPACAO", "DESCRICAO_OCUPACAO",
-                      "DATA_NASCIMENTO", "NUM_TITULO_ELEITORAL_CANDIDATO", "IDADE_DATA_ELEICAO",
-                      "CODIGO_SEXO", "DESCRICAO_SEXO", "COD_GRAU_INSTRUCAO", "CODIGO_COR_RACA",
-                      "DESCRICAO_COR_RACA", "DESCRICAO_GRAU_INSTRUCAO", "CODIGO_ESTADO_CIVIL",
-                      "DESCRICAO_ESTADO_CIVIL", "CODIGO_NACIONALIDADE", "DESCRICAO_NACIONALIDADE",
+  }else{
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "COD_TIPO_ELEICAO", "NOME_TIPO_ELEICAO",
+                      "NUM_TURNO", "COD_ELEICAO", "DESCRICAO_ELEICAO", "DATA_ELEICAO", "ABRANGENCIA", 
+                      "SIGLA_UF", "SIGLA_UE", "DESCRICAO_UE", "CODIGO_CARGO", "DESCRICAO_CARGO", 
+                      "SEQUENCIAL_CANDIDATO", "NUMERO_CANDIDATO", "NOME_CANDIDATO", "NOME_URNA_CANDIDATO", 
+                      "NOME_SOCIAL_CANDIDATO", "CPF_CANDIDATO", "EMAIL_CANDIDATO", "COD_SITUACAO_CANDIDATURA",
+                      "DES_SITUACAO_CANDIDATURA", "COD_DETALHE_SITUACAO_CAND", "DES_DETALHE_SITUACAO_CAND",
+                      "TIPO_AGREMIACAO", "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "CODIGO_LEGENDA",
+                      "NOME_COLIGACAO", "COMPOSICAO_LEGENDA", "CODIGO_NACIONALIDADE", "DESCRICAO_NACIONALIDADE",
                       "SIGLA_UF_NASCIMENTO", "CODIGO_MUNICIPIO_NASCIMENTO", "NOME_MUNICIPIO_NASCIMENTO",
-                      "DESPESA_MAX_CAMPANHA", "COD_SIT_TOT_TURNO", "DESC_SIT_TOT_TURNO", "EMAIL_CANDIDATO")
+                      "DATA_NASCIMENTO", "IDADE_DATA_POSSE", "NUM_TITULO_ELEITORAL_CANDIDATO", "CODIGO_SEXO",
+                      "DESCRICAO_SEXO", "COD_GRAU_INSTRUCAO", "DESCRICAO_GRAU_INSTRUCAO", "CODIGO_ESTADO_CIVIL",
+                      "DESCRICAO_ESTADO_CIVIL", "CODIGO_COR_RACA", "DESCRICAO_COR_RACA", "CODIGO_OCUPACAO", 
+                      "DESCRICAO_OCUPACAO", "DESPESA_MAX_CAMPANHA", "COD_SIT_TOT_TURNO", "DESC_SIT_TOT_TURNO",
+                      "SITUACAO_REELEICAO", "SITUACAO_DECLARAR_BENS", "NUMERO_PROTOCOLO_CANDIDATURA", 
+                      "NUMERO_PROCESSO")
   }
   
   # Change to ascii

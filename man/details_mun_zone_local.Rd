@@ -5,7 +5,7 @@
 \title{Download data on the verification of local elections in Brazil}
 \usage{
 details_mun_zone_local(year, uf = "all", ascii = FALSE,
-  encoding = "Latin-1", export = FALSE)
+  encoding = "latin1", export = FALSE)
 }
 \arguments{
 \item{year}{Election year. For this function, only the years 1996, 2000, 2004, 2008, 2012 and 2016

@@ -4,14 +4,18 @@
 \alias{legend_fed}
 \title{Download data on federal election coalitions in Brazil}
 \usage{
-legend_fed(year, uf = "all", ascii = FALSE, encoding = "Latin-1",
-  export = FALSE)
+legend_fed(year, uf = "all", br_archive = FALSE, ascii = FALSE,
+  encoding = "latin1", export = FALSE)
 }
 \arguments{
-\item{year}{Election year. For this function, only the years 1998, 2002, 2006, 2010, and 2014
+\item{year}{Election year. For this function, only the years 1994, 1998, 2002, 2006, 2010, 2014 and 2018
 are available.}
 
 \item{uf}{Federation Unit acronym (\code{character vector}).}
+
+\item{br_archive}{In the TSE's data repository, some results can be obtained for the whole country by loading a single
+within a single file by setting this argument to \code{TRUE} (may not work in for some elections and, in 
+other, it recoverns only electoral data for presidential elections, absent in other files).}
 
 \item{ascii}{(\code{logical}). Should the text be transformed from Latin-1 to ASCII format?}
 
@@ -45,6 +49,7 @@ when \code{ascii = TRUE}.}
   \item CODIGO_COLIGACAO: Coalition's code.
   \item COMPOSICAO_COLIGACAO: Coalition's composition.
   \item SEQUENCIAL_COLIGACAO: Coalition's sequential number, generated internally by the electoral justice.
+  \item SIGLA_COLIGACAO: Coalition's acronym.
 }
 }
 \description{

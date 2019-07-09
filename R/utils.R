@@ -1,7 +1,7 @@
 # Startup message
 .onAttach <- 
   function(libname, pkgname) {
-    packageStartupMessage("\nTo cite electionsBR in publications, use: citation(electionsBR)")
+    packageStartupMessage("\nTo cite electionsBR in publications, use: citation('electionsBR')")
     packageStartupMessage("To learn more, visit: http://electionsbr.com\n")
   }
 
@@ -34,21 +34,35 @@ parties_br <- function() {
 
 
 # Reads and rbinds multiple data.frames in the same directory
-juntaDados <- function(uf, encoding){
+#' @import dplyr
+juntaDados <- function(uf, encoding, br_archive){
 
-  Sys.glob("*.txt")[grepl(uf, Sys.glob("*.txt"))] %>%
-    lapply(function(x) tryCatch(data.table::fread(x, header = F, sep = ";", stringsAsFactors = F, data.table = F, verbose = F, showProgress = F, encoding = encoding), 
+   archive <- Sys.glob("*")[grepl(".pdf", Sys.glob("*")) == FALSE] %>%
+      .[grepl(uf, .)] %>%
+      file.info() %>%
+      .[.$size > 200, ] %>%
+      row.names()
+   
+   if(!br_archive){
+     
+     archive <- archive[grepl("BR", archive) == FALSE]
+     
+   } else {
+     
+     archive <- archive[grepl("BR", archive) == TRUE]
+   }
+   
+   if(grepl(".csv", archive[1])){
+     test_col_names <- TRUE
+   }else{
+     test_col_names <- FALSE
+   }
+   
+  lapply(archive, function(x) tryCatch(suppressWarnings(readr::read_delim(x, col_names = test_col_names, delim = ";", locale = readr::locale(encoding = encoding), col_types = readr::cols(), progress = F)), 
                                 error = function(e) NULL)) %>%
-    data.table::rbindlist() %>%
-    dplyr::as.tbl()
-  
-  #banco <- Sys.glob("*.txt") %>%
-  #  lapply(function(x) tryCatch(read.table(x, header = F, sep = ";", stringsAsFactors = F, fill = T, fileEncoding = encoding), error = function(e) NULL))
-  #nCols <- sapply(banco, ncol)
-  #banco <- banco[nCols == Moda(nCols)] %>%
-  #  do.call("rbind", .)
-  #
-  #banco
+  data.table::rbindlist() %>%
+  dplyr::as.tbl()
+
 }
 
 
@@ -64,7 +78,7 @@ to_ascii <- function(banco, encoding){
 # Tests federal election year inputs
 test_fed_year <- function(year){
 
-  if(!is.numeric(year) | length(year) != 1 | !year %in% seq(1998, 2014, 4)) stop("Invalid input. Please, check the documentation and try again.")
+  if(!is.numeric(year) | length(year) != 1 | !year %in% seq(1994, 2018, 4)) stop("Invalid input. Please, check the documentation and try again.")
 }
 
 
@@ -75,11 +89,38 @@ test_local_year <- function(year){
 }
 
 
+# Test federal positions
+#test_fed_position <- function(position){
+#  position <- tolower(position)
+#  if(!is.character(position) | length(position) != 1 | !position %in% c("presidente",
+#                                                                        "governador",
+#                                                                        "senador",
+#                                                                        "deputado federal",
+#                                                                        "deputado estadual",
+#                                                                        "deputado distrital")) stop("Invalid input. Please, check the documentation and try again.")
+#}
+
+
+# Test federal positions
+#test_local_position <- function(position){
+#  position <- tolower(position)
+#  if(!is.character(position) | length(position) != 1 | !position %in% c("prefeito",
+#                                                                        "vereador")) stop("Invalid input. Please, check the documentation and try again.")
+#}
+
+
 # Converts electoral data from Latin-1 to ASCII
 test_encoding <- function(encoding){
   if(encoding == "Latin-1") encoding <- "latin1"
   
   if(!encoding %in% tolower(iconvlist())) stop("Invalid encoding. Check iconvlist() to view a list with all valid encodings.")
+}
+
+
+# Test br types
+test_br <- function(br_archive){
+  
+  if(!is.logical(br_archive)) message("'br_archive' must be logical (TRUE or FALSE).")
 }
 
 
@@ -97,6 +138,18 @@ test_uf <- function(uf) {
   else return(paste(uf, collapse = "|"))
 }
 
+# Replace position by cod position
+# replace_position_cod <- function(position){
+#  position <- tolower(position)
+#  return(switch(position, "presidente" = 1,
+#         "governador" = 3,
+#         "senador" = 5,
+#         "deputado federal" = 6,
+#         "deputado estadual" = 7,
+#         "deputado distrital" = 8,
+#         "prefeito" = 11,
+#         "vereador" = 13))
+# }
 
 # Function to export data to .dta and .sav
 export_data <- function(df) {

@@ -1,9 +1,9 @@
 Package: electionsBR
 Type: Package
 Title: R Functions to Download and Clean Brazilian Electoral Data
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
-    person("Denisson", "Silva", , "denissonsilva@ufmg.br", c("aut", "cre")),
+    person("Denisson", "Silva", , "denissoncsol@gmail.com", c("aut", "cre")),
     person("Fernando", "Meireles", , "fmeireles@ufmg.br", "aut"),
     person("Beatriz", "Costa", ,"bea.s.costa@gmail.com", "ctb")
     )
@@ -16,18 +16,18 @@ Description: Offers a set of functions to easily download and clean
 License: GPL (>= 2)
 Depends: R (>= 3.1.2)
 Imports: magrittr, dplyr (>= 0.5.0), data.table (>= 1.9.8), haven (>=
-        1.0.0), stats
+        1.0.0), readr, stats
 LazyData: TRUE
 URL: http://electionsbr.com/
 BugReports: https://github.com/silvadenisson/electionsBR/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2017-06-06 15:44:43 UTC; User
+Packaged: 2019-07-08 12:12:25 UTC; meire
 Author: Denisson Silva [aut, cre],
   Fernando Meireles [aut],
   Beatriz Costa [ctb]
-Maintainer: Denisson Silva <denissonsilva@ufmg.br>
+Maintainer: Denisson Silva <denissoncsol@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-06-06 16:14:18 UTC
+Date/Publication: 2019-07-09 13:30:03 UTC

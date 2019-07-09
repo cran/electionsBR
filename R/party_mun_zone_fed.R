@@ -4,12 +4,16 @@
 #' disaggregated by cities and electoral zones. The function returns a \code{data.frame} where each observation
 #' corresponds to a city/zone.
 #'
-#' @note For the elections prior to 2002, some information can be incomplete. For the 2014 elections, one more variable is available.
+#' @note For the elections prior to 2002, some information can be incomplete. For the 2014 and 2018 elections, more variable are available.
 #'
-#' @param year Election year. For this function, only the years 1998, 2002, 2006, 2010, and 2014
+#' @param year Election year. For this function, only the years 1994, 1998, 2002, 2006, 2010, 2014 and 2018
 #' are available.
 #' 
 #' @param uf Filter results by Federation Unit acronym (\code{character vector}).
+#' 
+#' @param br_archive In the TSE's data repository, some results can be obtained for the whole country by loading a single
+#' within a single file by setting this argument to \code{TRUE} (may not work in for some elections and, in 
+#' other, it recoverns only electoral data for presidential elections, absent in other files).
 #'
 #' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
 #'
@@ -50,6 +54,16 @@
 #'   \item SEQUENCIAL_LEGENDA: Coalition's sequential number, generated internally by the electoral justice.
 #'   \item TRANSITO: It informs whether the record relates or not to absentee ballot votes (only for 2014 election).
 #' }
+#' 
+#' From 2018 on, some new variables are also available:
+#' \itemize{
+#'   \item COD_TIPO_ELEICAO: Election type code.
+#'   \item NOME_TIPO_ELEICAO: Election type.
+#'   \item COD_ELEICAO: Election code.
+#'   \item DATA_ELEICAO: Election date.
+#'   \item ABRANGENCIA: Election scope.
+#'   \item NOME_UE: Electoral unit name.
+#'}
 #'
 #' @seealso \code{\link{party_mun_zone_local}} for local elections in Brazil.
 #'
@@ -61,13 +75,14 @@
 #' df <- party_mun_zone_fed(2002)
 #' }
 
-party_mun_zone_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
+party_mun_zone_fed <- function(year, uf = "all",  br_archive = FALSE, ascii = FALSE, encoding = "latin1", export = FALSE){
 
 
   # Test the input
   test_encoding(encoding)
   test_fed_year(year)
   uf <- test_uf(uf)
+  test_br(br_archive)
 
   # Download the data
   dados <- tempfile()
@@ -80,7 +95,7 @@ party_mun_zone_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Lati
   
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados(uf, encoding)
+  banco <- juntaDados(uf, encoding, br_archive)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -92,12 +107,19 @@ party_mun_zone_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Lati
                       "SIGLA_PARTIDO", "NUMERO_PARTIDO", "NOME_PARTIDO", "QTDE_VOTOS_NOMINAIS",
                       "QTDE_VOTOS_LEGENDA", "SEQUENCIAL_LEGENDA")
 
-  } else {
+  } else if(year == 2014){
     names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
                       "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
                       "CODIGO_CARGO", "DESCRICAO_CARGO", "TIPO_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA",
                       "SIGLA_PARTIDO", "NUMERO_PARTIDO", "NOME_PARTIDO", "QTDE_VOTOS_NOMINAIS",
                       "QTDE_VOTOS_LEGENDA", "TRANSITO", "SEQUENCIAL_LEGENDA")
+  } else{
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "COD_TIPO_ELEICAO", "NOME_TIPO_ELEICAO",
+                      "NUM_TURNO", "COD_ELEICAO", "DESCRICAO_ELEICAO", "DATA_ELEICAO", "ABRANGENCIA",
+                      "SIGLA_UF", "SIGLA_UE", "NOME_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
+                      "CODIGO_CARGO", "DESCRICAO_CARGO", "TIPO_LEGENDA", "NUMERO_PARTIDO", "SIGLA_PARTIDO",
+                      "NOME_PARTIDO", "SEQUENCIAL_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA", 
+                      "TRANSITO", "QTDE_VOTOS_NOMINAIS", "QTDE_VOTOS_LEGENDA")
   }
   
   # Change to ascii

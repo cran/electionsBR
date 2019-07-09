@@ -12,54 +12,289 @@
 
 <meta name="author" content="Fernando Meireles, Denisson Silva, Beatriz Costa" />
 
-<meta name="date" content="2017-05-11" />
+<meta name="date" content="2019-07-08" />
 
 <title>Introduction to the electionsBR package</title>
 
 
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -69,100 +304,102 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Introduction to the electionsBR package</h1>
-<h4 class="author"><em>Fernando Meireles, Denisson Silva, Beatriz Costa</em></h4>
-<h4 class="date"><em>2017-05-11</em></h4>
+<h4 class="author">Fernando Meireles, Denisson Silva, Beatriz Costa</h4>
+<h4 class="date">2019-07-08</h4>
 
 
 
+<pre><code>## 
+## To cite electionsBR in publications, use: citation('electionsBR')</code></pre>
+<pre><code>## To learn more, visit: http://electionsbr.com</code></pre>
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p><code>electionsBR</code> is an <code>R</code> package used to retrieve and clean Brazilian electoral data, directly from the Superior Electoral Court (TSE) <a href="http://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais">website</a>. Among others, <code>electionsBR</code> provides functions to obtain data on electoral results, candidates’ personal and professional backgrounds, parties’ electoral performances, electoral coalitions, available seats under dispute, and voters’ profile.</p>
+<p><code>electionsBR</code> is an <code>R</code> package used to pull and clean Brazilian electoral data, directly from the Superior Electoral Court (TSE) <a href="http://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais">website</a>. Among others, <code>electionsBR</code> retrieves data on electoral results, candidates’ personal and professional backgrounds, parties’ electoral performances, electoral coalitions, available seats under dispute, and voters’ profile.</p>
 </div>
 <div id="how-to-install" class="section level2">
 <h2>How to install</h2>
 <p>Since the version <code>0.1.1</code>, <code>electionsBR</code> is on CRAN and can be installed with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;electionsBR&quot;</span>)</code></pre></div>
-<p>Development versions of the package are also available on <a href="https://github.com/">GitHub</a>. You can install these pre-release versions with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if (!<span class="kw">require</span>(<span class="st">&quot;devtools&quot;</span>)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
-devtools::<span class="kw">install_github</span>(<span class="st">&quot;silvadenisson/electionsBR&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;electionsBR&quot;</span>)</a></code></pre></div>
+<p>You can install these pre-release versions from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="cf">if</span> (<span class="op">!</span><span class="kw">require</span>(<span class="st">&quot;devtools&quot;</span>)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;silvadenisson/electionsBR&quot;</span>)</a></code></pre></div>
 </div>
 <div id="how-to-use" class="section level2">
 <h2>How to use</h2>
-<p>No previous experience with <code>R</code> is required to use the <code>electionsBR</code> package. In fact, one needs only two lines of code to download, clean and export (to <a href="http://www.stata.com/">Stata</a> and <a href="https://www.ibm.com/analytics/us/en/technology/spss/">SPSS</a> formats) Brazilian electoral data. For instance, here is how we get a full, cleaned dataset with electoral results for the 2010 Federal election:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;electionsBR&quot;</span>)
-electionsBR::<span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">export =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>No previous experience with <code>R</code> is required to use the <code>electionsBR</code> package. In fact, it takes only two lines of code to download, clean and export (to <a href="http://www.stata.com/">Stata</a> and <a href="https://www.ibm.com/analytics/us/en/technology/spss/">SPSS</a> formats) Brazilian electoral data. For example, here is how we get a full, cleaned dataset with electoral results for the 2010 Federal election:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;electionsBR&quot;</span>)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">electionsBR<span class="op">::</span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">export =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>By setting the <code>export</code> argument to <code>TRUE</code> in the <code>vote_mun_zone_fed</code> function, the package will download and clean the relevant data directly from the TSE website and save it in the <code>R</code> working directory (the function automatically tells the user where this directory is located) in two different files:</p>
 <ol style="list-style-type: decimal">
 <li><code>electoral_data.dta</code>, to be used with <a href="http://www.stata.com/">Stata</a>;</li>
 <li><code>electoral_data.sav</code>, to be used with <a href="https://www.ibm.com/analytics/us/en/technology/spss/">SPSS</a>.</li>
 </ol>
-<p>In the remaining of this vignette, we document all the functionality included in the package.</p>
 </div>
 <div id="data-on-elections-results" class="section level2">
 <h2>Data on elections results</h2>
-<p>Chief functions in <code>electionsBR</code> are the ones used to get electoral results, which includes candidates’ number of votes and electoral status (i.e., elected and non-elected), among many others. To get these data, use <code>vote_mun_zone_</code> functions:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load the package</span>
-<span class="kw">library</span>(electionsBR)
-
-<span class="co"># Use vote_mun_zone_fed function to download 2014 election results</span>
-df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2014</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get results for the 2000 local elections</span>
-df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_local</span>(<span class="dv">2000</span>)</code></pre></div>
+<p><code>electionsBR</code>‘s chief functions are the ones used to get electoral results, which includes candidates’ number of votes and electoral status (i.e., elected and non-elected), among many others. To get these data, use <code>vote_mun_zone_</code> functions:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Load the package</span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">library</span>(electionsBR)</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co"># Use vote_mun_zone_fed function to download 2014 election results</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2014</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Get results for the 2000 local elections</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_local</span>(<span class="dv">2000</span>)</a></code></pre></div>
 </div>
 <div id="federal-elections-results" class="section level2">
 <h2>Federal elections results</h2>
-<p>There are also functions used to quickly access presidential and legislative elections results per state and per municipality – with voting percentages reported. To get presidential runnoff (second round) results, use <code>president_</code> functions:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get presidential electoral results by municipality in tidy format</span>
-pres_mun &lt;-<span class="st"> </span><span class="kw">president_mun_vote</span>(<span class="dv">2010</span>, <span class="dt">perc =</span> <span class="ot">TRUE</span>)
-
-<span class="co"># Get presidential electoral results by state in tidy format</span>
-pres_st &lt;-<span class="st"> </span><span class="kw">president_state_vote</span>(<span class="dv">2010</span>, <span class="dt">perc =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>There are also functions used to quickly access presidential and legislative elections results per state and per municipality – with vote proportions (i.e., vote share) reported. To get presidential runoff (second round) results in runoff, use <code>president_</code> functions:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Get presidential electoral results by municipality in tidy format</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">pres_mun &lt;-<span class="st"> </span><span class="kw">president_mun_vote</span>(<span class="dv">2010</span>, <span class="dt">prop =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co"># Get presidential electoral results by state in tidy format</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">pres_st &lt;-<span class="st"> </span><span class="kw">president_state_vote</span>(<span class="dv">2010</span>, <span class="dt">prop =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>To get legislative election results, use instead:</p>
 <pre><code>legislative_mun_vote(year)
 legislative_state_vote(year)</code></pre>
 </div>
 <div id="data-on-running-candidates" class="section level2">
 <h2>Data on running candidates</h2>
-<p>Data on candidates’ party affiliation, ballot number, backgrounds and personal informations can be retrieved with <code>candidate_</code> functions:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get data on candidates running in local elections</span>
-df &lt;-<span class="st"> </span><span class="kw">candidate_local</span>(<span class="dv">2016</span>)
-
-<span class="co"># Get data on candidates running in federal elections</span>
-df &lt;-<span class="st"> </span><span class="kw">candidate_fed</span>(<span class="dv">2016</span>)</code></pre></div>
+<p>Data on candidates’ party affiliation, ballot number, backgrounds and personal information can be retrieved with <code>candidate_</code> functions:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co"># Get data on candidates running in local elections</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">df &lt;-<span class="st"> </span><span class="kw">candidate_local</span>(<span class="dv">2016</span>)</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co"># Get data on candidates running in federal elections</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">df &lt;-<span class="st"> </span><span class="kw">candidate_fed</span>(<span class="dv">2016</span>)</a></code></pre></div>
 </div>
 <div id="data-on-parties-and-electoral-coalitions" class="section level2">
 <h2>Data on parties and electoral coalitions</h2>
-<p>Parties’ electoral perfomances in both local and federal elections, for all electoral positions, are extract with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get data on parties' electoral performances in the federal election of 2006</span>
-federal &lt;-<span class="st"> </span><span class="kw">party_mun_zone_fed</span>(<span class="dv">2006</span>)
-
-<span class="co"># Get data on parties' electoral performances in the local election of 2004</span>
-municipal &lt;-<span class="st"> </span><span class="kw">party_mun_zone_local</span>(<span class="dv">2004</span>)</code></pre></div>
-<p>To get the composition of electoral coalitions (very common in proportional elections), use instead:</p>
+<p>Parties’ electoral performances in both local and federal elections, for all electoral positions, are extracted with:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co"># Get data on parties' electoral performances in the federal election of 2006</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">federal &lt;-<span class="st"> </span><span class="kw">party_mun_zone_fed</span>(<span class="dv">2006</span>)</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co"># Get data on parties' electoral performances in the local election of 2004</span></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">municipal &lt;-<span class="st"> </span><span class="kw">party_mun_zone_local</span>(<span class="dv">2004</span>)</a></code></pre></div>
+<p>To get the composition of electoral coalitions (common in proportional elections), use instead:</p>
 <pre><code>legend_fed(year)
 legend_local(year)</code></pre>
 </div>
 <div id="data-on-voters" class="section level2">
 <h2>Data on voters</h2>
 <p>To get data on voters’ profile in both local and federal elections, use the <code>voter_profile</code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Get data on voters' profile</span>
-voters02 &lt;-<span class="st"> </span><span class="kw">voter_profile</span>(<span class="dv">2002</span>)
-voters04 &lt;-<span class="st"> </span><span class="kw">voter_profile</span>(<span class="dv">2004</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># Get data on voters' profile</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">voters02 &lt;-<span class="st"> </span><span class="kw">voter_profile</span>(<span class="dv">2002</span>)</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">voters04 &lt;-<span class="st"> </span><span class="kw">voter_profile</span>(<span class="dv">2004</span>)</a></code></pre></div>
 <p>Individual records of partisan affiliation are extracted with the <code>voter_affiliation</code> function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># PT (Brazilian Workers' Party) in Distrito Federal (DF)</span>
-df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span class="st">&quot;PT&quot;</span>, <span class="st">&quot;DF&quot;</span>)
-
-<span class="co"># PSDB (Brazilian Social Democracy Party) in Sao Paulo (SP)</span>
-df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span class="st">&quot;PSDB&quot;</span>, <span class="st">&quot;SP&quot;</span>)
-
-<span class="co"># PT and PC do B (Brazilian Communist Party) in DF, MG and AL</span>
-df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span class="kw">c</span>(<span class="st">&quot;PT&quot;</span>, <span class="st">&quot;PC do B&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;DF&quot;</span>, <span class="st">&quot;MG&quot;</span>, <span class="st">&quot;AL&quot;</span>))</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co"># PT (Brazilian Workers' Party) in Distrito Federal (DF)</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span class="st">&quot;PT&quot;</span>, <span class="st">&quot;DF&quot;</span>)</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="co"># PSDB (Brazilian Social Democracy Party) in Sao Paulo (SP)</span></a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span class="st">&quot;PSDB&quot;</span>, <span class="st">&quot;SP&quot;</span>)</a>
+<a class="sourceLine" id="cb14-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="co"># PT and PC do B (Brazilian Communist Party) in DF, MG and AL</span></a>
+<a class="sourceLine" id="cb14-8" data-line-number="8">df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span class="kw">c</span>(<span class="st">&quot;PT&quot;</span>, <span class="st">&quot;PC do B&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;DF&quot;</span>, <span class="st">&quot;MG&quot;</span>, <span class="st">&quot;AL&quot;</span>))</a></code></pre></div>
 <p>To consult state abbreviations, use:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">uf_br</span>()</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">uf_br</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;AC&quot; &quot;AL&quot; &quot;AM&quot; &quot;AP&quot; &quot;BA&quot; &quot;CE&quot; &quot;DF&quot; &quot;ES&quot; &quot;GO&quot; &quot;MA&quot; &quot;MG&quot; &quot;MS&quot; &quot;MT&quot; &quot;PA&quot;
 ## [15] &quot;PB&quot; &quot;PE&quot; &quot;PI&quot; &quot;PR&quot; &quot;RJ&quot; &quot;RN&quot; &quot;RO&quot; &quot;RR&quot; &quot;RS&quot; &quot;SC&quot; &quot;SE&quot; &quot;SP&quot; &quot;TO&quot;</code></pre>
 <p>A <code>character</code> vector with a list os party abbreviations, valid for 2016 elections, can be obtained with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parties_br</span>()</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw">parties_br</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;PPS&quot;     &quot;PSB&quot;     &quot;PSOL&quot;    &quot;PP&quot;      &quot;PSL&quot;     &quot;PR&quot;      &quot;PSDB&quot;   
 ##  [8] &quot;PDT&quot;     &quot;PSDC&quot;    &quot;PHS&quot;     &quot;PT&quot;      &quot;PROS&quot;    &quot;PTC&quot;     &quot;PSC&quot;    
 ## [15] &quot;PC do B&quot; &quot;PRB&quot;     &quot;PMDB&quot;    &quot;DEM&quot;     &quot;PMB&quot;     &quot;PTB&quot;     &quot;PEN&quot;    
@@ -171,7 +408,7 @@ df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span
 </div>
 <div id="other-functions" class="section level2">
 <h2>Other functions</h2>
-<p><code>electionsBR</code> also includes functions to download data on valid and residual votes and on the number of seats under dispute in each election. The relevant functions are, respectivelly:</p>
+<p><code>electionsBR</code> also includes functions to download data on valid and residual votes and on the number of seats under dispute in each election. The relevant functions are, respectively:</p>
 <pre><code>details_mun_zone_fed(year)
 details_mun_zone_local(year)</code></pre>
 <pre><code>seats_fed(year)
@@ -182,27 +419,27 @@ seats_local(year)</code></pre>
 <div id="exporting-brazilian-electoral-data" class="section level3">
 <h3>Exporting Brazilian electoral data</h3>
 <p>Most <code>electionsBR</code>’s functions accept an <code>export</code> argument (<code>logical</code>, must be <code>TRUE</code> or <code>FALSE</code>; defaults to the latter) controlling whether the functions should export the retrieved data to <a href="http://www.stata.com/">Stata</a> and <a href="https://www.ibm.com/analytics/us/en/technology/spss/">SPSS</a> files or not.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">party_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">export =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">party_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">export =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
 <div id="removing-utf-8-special-characters-from-texts" class="section level3">
 <h3>Removing UTF-8 special characters from texts</h3>
-<p>By default, <code>electionsBR</code>’s functions mantain the data’s original encoding (<code>latin1</code>) with special characters. To convert strings to <code>ASCII</code>, set the <code>ascii</code> argument to <code>TRUE</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">candidate_fed</span>(<span class="dv">2010</span>, <span class="dt">ascii =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p>In Mac computers, this option may cause errors (or may retrieve incomplete data for the 2016 elections). To avoid them, use the <code>encoding</code> optional argument as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">candidate_fed</span>(<span class="dv">2010</span>, <span class="dt">ascii =</span> <span class="ot">TRUE</span>, <span class="dt">encoding =</span> <span class="st">&quot;latin1&quot;</span>)</code></pre></div>
-<p><code>encoding</code> may also be <code>UTF-8</code> or <code>windows-1252</code> (default).</p>
+<p>By default, <code>electionsBR</code>’s functions maintain data’s original encoding (<code>Latin-1</code>) in special characters. To convert strings to <code>ASCII</code>, set the <code>ascii</code> argument to <code>TRUE</code>.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">candidate_fed</span>(<span class="dv">2010</span>, <span class="dt">ascii =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>In Mac computers, this option may cause errors (or may retrieve incomplete data for the 2016 elections). To avoid them, you may use the <code>encoding</code> optional argument as follows:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">df &lt;-<span class="st"> </span><span class="kw">candidate_fed</span>(<span class="dv">2010</span>, <span class="dt">ascii =</span> <span class="ot">TRUE</span>, <span class="dt">encoding =</span> <span class="st">&quot;Latin-1&quot;</span>)</a></code></pre></div>
+<p><code>encoding</code> may also be <code>UTF-8</code> or other valid encodings.</p>
 </div>
 <div id="filtering-results-by-state" class="section level3">
 <h3>Filtering results by state</h3>
-<p>Sometimes, users may want electoral data for a state only, and not for the whole country. To filter results by state, use the <code>uf</code> optional argument in most functions:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Electoral results for the 2010 federal elections in Sao Paulo (SP)</span>
-df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">uf =</span> <span class="st">&quot;SP&quot;</span>)
-
-<span class="co"># Electoral results for the 2010 federal elections in Minas Gerais (MS)</span>
-df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">uf =</span> <span class="st">&quot;mg&quot;</span>)
-
-<span class="co"># Electoral results for the 2010 federal elections in RS, SC, and PR</span>
-df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">uf =</span> <span class="kw">c</span>(<span class="st">&quot;RS&quot;</span>, <span class="st">&quot;SC&quot;</span>, <span class="st">&quot;PR&quot;</span>))</code></pre></div>
+<p>Sometimes, getting state electoral data, and not for the whole country, is what one needs. To achieve this, use the <code>uf</code> optional argument (available in most functions):</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># Electoral results for the 2010 federal elections in Sao Paulo (SP)</span></a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">uf =</span> <span class="st">&quot;SP&quot;</span>)</a>
+<a class="sourceLine" id="cb24-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb24-4" data-line-number="4"><span class="co"># Electoral results for the 2010 federal elections in Minas Gerais (MS)</span></a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">uf =</span> <span class="st">&quot;mg&quot;</span>)</a>
+<a class="sourceLine" id="cb24-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb24-7" data-line-number="7"><span class="co"># Electoral results for the 2010 federal elections in RS, SC, and PR</span></a>
+<a class="sourceLine" id="cb24-8" data-line-number="8">df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">uf =</span> <span class="kw">c</span>(<span class="st">&quot;RS&quot;</span>, <span class="st">&quot;SC&quot;</span>, <span class="st">&quot;PR&quot;</span>))</a></code></pre></div>
 <p>Notice that the input must be a <code>character</code> vector – with case insensitive state abbreviations (MG, Mg, mG, and mg are all equally valid inputs).</p>
 </div>
 </div>
@@ -233,7 +470,7 @@ df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span
 </div>
 <div id="elections-in-brazil" class="section level2">
 <h2>Elections in Brazil</h2>
-<p>All the data retrieved by <code>electionsBR</code> is made available online by the <a href="http://english.tse.jus.br/the-electoral-justice/the-electoral-justice-1/the-electoral-justice">Brazilian Superior Electoral Court (TSE)</a>. And, as state in the <a href="http://english.tse.jus.br/the-brazilian-electoral-system/elections/elections">English version of the TSE website</a>, elections in Brazil are organized in the following way:</p>
+<p>All the data retrieved by <code>electionsBR</code> is made available online by the <a href="http://english.tse.jus.br/the-electoral-justice/the-electoral-justice-1/the-electoral-justice">Brazilian Superior Electoral Court (TSE)</a>. As state in the <a href="http://english.tse.jus.br/the-brazilian-electoral-system/elections/elections">English version of the TSE website</a>, elections in Brazil are organized in the following way:</p>
 <blockquote>
 <p>Are carried out together the federal elections and the state elections, for president and vice president, senator and alternates, governor and vice governor, federal deputies and state deputies. Two years later, will be municipal elections, of mayor and vice mayor and city councils. Note that the distinguishing criterion is by federal level and not by powers – the representatives from the executive and legislative are elected at the same time.</p>
 </blockquote>
@@ -245,43 +482,38 @@ df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span
 </blockquote>
 <div id="official-documentation" class="section level3">
 <h3>Official documentation</h3>
-<p><code>electionsBR</code> internal documentation is entirely based on the official documentation provided by the TSE in the <a href="http://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais">Repositorio de Dados Eleitorais</a>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<p><code>electionsBR</code> internal documentation is entirely based on the official documentation provided by the TSE in the <a href="http://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais">Repositorio de Dados Eleitorais</a>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 </div>
 </div>
 <div id="disclaimer" class="section level2">
 <h2>Disclaimer</h2>
-<p>The <code>electionsBR</code> package does not modify nor filter the data provided by the TSE – despite its many problems.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Additionally, users must be aware that the TSE updates its databases frequently, so it is important to register when a version of the electoral data is used. In any case, we are not responsible for problems with the data users may find.</p>
+<p>The <code>electionsBR</code> package does not modify nor filter the data provided by the TSE – despite its many problems.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> Additionally, users must be aware that the TSE updates its databases frequently, so it is important to register when a version of the electoral data is used. In any case, we are not responsible for problems with the data users may find.</p>
 </div>
 <div id="how-to-cite" class="section level2">
 <h2>How to cite</h2>
 <p>To cite <code>electionsBR</code> in publications, please use:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">citation</span>(<span class="st">&quot;electionsBR&quot;</span>)</code></pre></div>
-<pre><code>## Warning in citation(&quot;electionsBR&quot;): no date field in DESCRIPTION file of
-## package 'electionsBR'</code></pre>
-<pre><code>## Warning in citation(&quot;electionsBR&quot;): could not determine year for
-## 'electionsBR' from package DESCRIPTION file</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">citation</span>(<span class="st">&quot;electionsBR&quot;</span>)</a></code></pre></div>
 <pre><code>## 
-## To cite package 'electionsBR' in publications use:
+## To cite electionsBR in publications, please use:
 ## 
-##   Denisson Silva and Fernando Meireles (NA). electionsBR: R
-##   Functions to Download and Clean Brazilian Electoral Data. R
-##   package version 1.2.0.
-##   https://github.com/silvadenisson/electionsBR
+##   Meireles, Fernando; Silva, Denisson; Costa, Beatriz. (2016).
+##   electionsBR: R functions to download and clean Brazilian
+##   electoral data. URL: http://electionsbr.com/
 ## 
 ## A BibTeX entry for LaTeX users is
 ## 
 ##   @Manual{,
-##     title = {electionsBR: R Functions to Download and Clean Brazilian Electoral Data},
-##     author = {Denisson Silva and Fernando Meireles},
-##     note = {R package version 1.2.0},
-##     url = {https://github.com/silvadenisson/electionsBR},
+##     title = {{electionsBR}: {R} Functions to Download and Clean {B}razilian Electoral Data},
+##     author = {Fernando Meireles and Denisson Silva and Beatriz Costa},
+##     year = {2016},
+##     url = {http://electionsbr.com/},
 ##   }</code></pre>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>To access the documentation for each type of electoral data, it is necessary to download and open the correspondent compressed files (<code>.zip</code>).<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>The only exceptions are the <code>president_</code> and <code>legislative_</code> functions, which aggregates electoral data in a different unit than in the original files.<a href="#fnref2">↩</a></p></li>
+<li id="fn1"><p>To access the documentation for each type of electoral data, it is necessary to download and open the correspondent compressed files (<code>.zip</code>).<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>The only exceptions are the <code>president_</code> and <code>legislative_</code> functions, which aggregates electoral data in a different unit than in the original files.<a href="#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 

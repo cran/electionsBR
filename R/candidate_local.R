@@ -11,9 +11,9 @@
 #' 
 #' @param uf Federation Unit acronym (\code{character vector}).
 #'
-#' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
+#' @param ascii (\code{logical}). Should the text be transformed from latin1 to ASCII format?
 #'
-#' @param encoding Data original encoding (defaults to 'Latin-1'). This can be changed to avoid errors
+#' @param encoding Data original encoding (defaults to 'latin1'). This can be changed to avoid errors
 #' when \code{ascii = TRUE}.
 #' 
 #' @param export (\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?
@@ -86,14 +86,13 @@
 #' df <- candidate_local(2000)
 #' }
 
-candidate_local <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
-
+candidate_local <- function(year, uf = "all", ascii = FALSE, encoding = "latin1", export = FALSE){
 
   # Input tests
   test_encoding(encoding)
   test_local_year(year)
   uf <- test_uf(uf)
-
+  
   # Downloads the data
   dados <- tempfile()
   sprintf("http://agencia.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_%s.zip", year) %>%
@@ -105,7 +104,7 @@ candidate_local <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados(uf, encoding)
+  banco <- juntaDados(uf, encoding, FALSE)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -139,18 +138,23 @@ candidate_local <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1
                      "DESC_SIT_TOT_TURNO", "EMAIL_CANDIDATO")
     
   } else {
-    names(banco) <-c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
-                     "SIGLA_UF", "SIGLA_UE", "DESCRICAO_UE", "CODIGO_CARGO", "DESCRICAO_CARGO",
-                     "NOME_CANDIDATO", "SEQUENCIAL_CANDIDATO", "NUMERO_CANDIDATO", "CPF_CANDIDATO",
-                     "NOME_URNA_CANDIDATO", "COD_SITUACAO_CANDIDATURA", "DES_SITUACAO_CANDIDATURA",
-                     "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "CODIGO_LEGENDA", "SIGLA_LEGENDA",
-                     "COMPOSICAO_LEGENDA", "NOME_COLIGACAO", "CODIGO_OCUPACAO", "DESCRICAO_OCUPACAO",
-                     "DATA_NASCIMENTO", "NUM_TITULO_ELEITORAL_CANDIDATO", "IDADE_DATA_ELEICAO",
-                     "CODIGO_SEXO", "DESCRICAO_SEXO", "COD_GRAU_INSTRUCAO", "DESCRICAO_GRAU_INSTRUCAO",
-                     "CODIGO_ESTADO_CIVIL", "DESCRICAO_ESTADO_CIVIL", "CODIGO_COR_RACA", "DESCRICAO_COR_RACA",
-                     "CODIGO_NACIONALIDADE", "DESCRICAO_NACIONALIDADE", "SIGLA_UF_NASCIMENTO", 
-                     "CODIGO_MUNICIPIO_NASCIMENTO", "NOME_MUNICIPIO_NASCIMENTO", "DESPESA_MAX_CAMPANHA",
-                     "COD_SIT_TOT_TURNO", "DESC_SIT_TOT_TURNO", "EMAIL_CANDIDATO")
+    
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "COD_TIPO_ELEICAO", "NOME_TIPO_ELEICAO",
+                      "NUM_TURNO", "COD_ELEICAO", "DESCRICAO_ELEICAO", "DATA_ELEICAO", "ABRANGENCIA", 
+                      "SIGLA_UF", "SIGLA_UE", "DESCRICAO_UE", "CODIGO_CARGO", "DESCRICAO_CARGO", 
+                      "SEQUENCIAL_CANDIDATO", "NUMERO_CANDIDATO", "NOME_CANDIDATO", "NOME_URNA_CANDIDATO", 
+                      "NOME_SOCIAL_CANDIDATO", "CPF_CANDIDATO", "EMAIL_CANDIDATO", "COD_SITUACAO_CANDIDATURA",
+                      "DES_SITUACAO_CANDIDATURA", "COD_DETALHE_SITUACAO_CAND", "DES_DETALHE_SITUACAO_CAND",
+                      "TIPO_AGREMIACAO", "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "CODIGO_LEGENDA",
+                      "NOME_COLIGACAO", "COMPOSICAO_LEGENDA", "CODIGO_NACIONALIDADE", "DESCRICAO_NACIONALIDADE",
+                      "SIGLA_UF_NASCIMENTO", "CODIGO_MUNICIPIO_NASCIMENTO", "NOME_MUNICIPIO_NASCIMENTO",
+                      "DATA_NASCIMENTO", "IDADE_DATA_POSSE", "NUM_TITULO_ELEITORAL_CANDIDATO", "CODIGO_SEXO",
+                      "DESCRICAO_SEXO", "COD_GRAU_INSTRUCAO", "DESCRICAO_GRAU_INSTRUCAO", "CODIGO_ESTADO_CIVIL",
+                      "DESCRICAO_ESTADO_CIVIL", "CODIGO_COR_RACA", "DESCRICAO_COR_RACA", "CODIGO_OCUPACAO", 
+                      "DESCRICAO_OCUPACAO", "DESPESA_MAX_CAMPANHA", "COD_SIT_TOT_TURNO", "DESC_SIT_TOT_TURNO",
+                      "SITUACAO_REELEICAO", "SITUACAO_DECLARAR_BENS", "NUMERO_PROTOCOLO_CANDIDATURA", 
+                      "NUMERO_PROCESSO")
+    
   }
   
   # Change to ascii

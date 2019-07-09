@@ -6,10 +6,14 @@
 #'
 #' @note For elections prior to 2002, some information can be incomplete.
 #'
-#' @param year Election year. For this function, only the years 1998, 2002, 2006, 2010, and 2014
+#' @param year Election year. For this function, only the years 1994, 1998, 2002, 2006, 2010, 2014 and 2018
 #' are available.
 #' 
 #' @param uf Federation Unit acronym (\code{character vector}).
+#' 
+#' @param br_archive In the TSE's data repository, some results can be obtained for the whole country by loading a single
+#' within a single file by setting this argument to \code{TRUE} (may not work in for some elections and, in 
+#' other, it recoverns only electoral data for presidential elections, absent in other files).
 #'
 #' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
 #'
@@ -45,6 +49,7 @@
 #'   \item CODIGO_COLIGACAO: Coalition's code.
 #'   \item COMPOSICAO_COLIGACAO: Coalition's composition.
 #'   \item SEQUENCIAL_COLIGACAO: Coalition's sequential number, generated internally by the electoral justice.
+#'   \item SIGLA_COLIGACAO: Coalition's acronym.
 #' }
 #'
 #' @seealso \code{\link{legend_local}} for local elections in Brazil.
@@ -57,17 +62,25 @@
 #' df <- legend_fed(2002)
 #' }
 
-legend_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
+legend_fed <- function(year, uf = "all", br_archive = FALSE, ascii = FALSE, encoding = "latin1", export = FALSE){
 
 
   # Test the input
   test_encoding(encoding)
   test_fed_year(year)
   uf <- test_uf(uf)
+  test_br(br_archive)
+  
+  
+  if(year < 2018) {
+    endereco <- "http://agencia.tse.jus.br/estatistica/sead/odsele/consulta_legendas/consulta_legendas_%s.zip"
+  } else{
+    endereco <- "http://agencia.tse.jus.br/estatistica/sead/odsele/consulta_coligacao/consulta_coligacao_%s.zip"
+  }
 
   # Download the data
   dados <- tempfile()
-  sprintf("http://agencia.tse.jus.br/estatistica/sead/odsele/consulta_legendas/consulta_legendas_%s.zip", year) %>%
+  sprintf(endereco, year) %>%
     download.file(dados)
   unzip(dados, exdir = paste0("./", year))
   unlink(dados)
@@ -76,16 +89,25 @@ legend_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", ex
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados(uf, encoding)
+  banco <- juntaDados(uf, encoding, br_archive)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
   # Change variable names
+  if(year < 2018) {
     names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
                       "SIGLA_UF", "SIGLA_UE", "NOME_MUNICIPIO", "CODIGO_CARGO", "DESCRICAO_CARGO",
                       "TIPO_LEGENDA", "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "SIGLA_COLIGACAO",
                       "NOME_COLIGACAO", "COMPOSICAO_COLIGACAO", "SEQUENCIAL_COLIGACAO")
-    
+  } else{
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "COD_TIPO_ELEICAO", "NM_TIPO_ELEICAO",
+                      "NUM_TURNO", "COD_ELEICAO", "DESCRICAO_ELEICAO", "DATA_ELEICAO", "SIGLA_UF",
+                      "SIGLA_UE", "NOME_MUNICIPIO", "CODIGO_CARGO", "DESCRICAO_CARGO", "TIPO_LEGENDA",
+                      "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "SEQUENCIAL_COLIGACAO",
+                      "NOME_COLIGACAO", "COMPOSICAO_COLIGACAO")
+  }
+  
+  
   # Change to ascii
   if(ascii == T) banco <- to_ascii(banco, encoding)
     

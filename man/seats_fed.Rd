@@ -4,14 +4,18 @@
 \alias{seats_fed}
 \title{Download data on the number of seats under dispute in federal elections}
 \usage{
-seats_fed(year, uf = "all", ascii = FALSE, encoding = "Latin-1",
-  export = FALSE)
+seats_fed(year, uf = "all", br_archive = FALSE, ascii = FALSE,
+  encoding = "latin1", export = FALSE)
 }
 \arguments{
 \item{year}{Election year. For this function, only the years of 1996, 2000, 2004, 2008, 2012 and 2016
 are available.}
 
 \item{uf}{Federation Unit acronym (\code{character} vector).}
+
+\item{br_archive}{In the TSE's data repository, some results can be obtained for the whole country by loading a single
+within a single file by setting this argument to \code{TRUE} (may not work in for some elections and, in 
+other, it recoverns only electoral data for presidential elections, absent in other files).}
 
 \item{ascii}{(\code{logical}). Should the text be transformed from Latin-1 to ASCII format?}
 

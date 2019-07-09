@@ -4,7 +4,7 @@
 \alias{seats_local}
 \title{Download data on the number of seats under dispute in local elections}
 \usage{
-seats_local(year, uf = "all", ascii = FALSE, encoding = "Latin-1",
+seats_local(year, uf = "all", ascii = FALSE, encoding = "latin1",
   export = FALSE)
 }
 \arguments{

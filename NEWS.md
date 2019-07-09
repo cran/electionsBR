@@ -1,3 +1,15 @@
+# electionsBR 0.3.1
+
+This is a minor update with bug fixes and some improvements.
+
+* Fixed fill issues with data.table's fread when reading local data.
+* Included a new argument in most functions that allows users to load 
+electoral data for different elections and levels.
+* Included new functions to download data in Rdata format directly from a private web server.
+* Replaced data.table's fread to read data (as the Brazilian Electoral Court started using
+other file formats). From this version on, all functions internally use tidyverse's read_delim to read electoral data.
+* Updated documentation.
+
 # electionsBR 0.3.0
 
 We changed central aspects of the package, which affected all the functions in it (but without compromising backward compability). Beyond that, in this update we did our best to make the package more user friendly: we created a vignette, included more options to filter and customize functions' outputs, and added more specific functions (including one to easily export electoral data). With this new uptade, the package also gained a website. Overrall, this is what we did:

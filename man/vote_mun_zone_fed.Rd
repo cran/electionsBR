@@ -4,14 +4,18 @@
 \alias{vote_mun_zone_fed}
 \title{Download data on candidate electoral results in federal elections in Brazil}
 \usage{
-vote_mun_zone_fed(year, uf = "all", ascii = FALSE, encoding = "Latin-1",
-  export = FALSE)
+vote_mun_zone_fed(year, uf = "all", br_archive = FALSE,
+  ascii = FALSE, encoding = "latin1", export = FALSE)
 }
 \arguments{
 \item{year}{Election year. For this function, only the years 1998, 2002, 2006, 2010, and 2014
 are available.}
 
 \item{uf}{Federation Unit acronym (\code{character vector}).}
+
+\item{br_archive}{In the TSE's data repository, some results can be obtained for the whole country by loading a single
+within a single file by setting this argument to \code{TRUE} (may not work in for some elections and, in 
+other, it recoverns only electoral data for presidential elections, absent in other files).}
 
 \item{ascii}{(\code{logical}). Should the text be transformed from Latin-1 to ASCII format?}
 
@@ -53,6 +57,18 @@ when \code{ascii = TRUE}.}
   \item TOTAL_VOTOS: Total of votes.
   \item TRANSITO: It informs whether the record relates or not to absentee ballot votes (only for 2014 election).
  }
+ 
+From 2018 on, some new variables are also available:
+\itemize{
+  \item COD_TIPO_ELEICAO: Election type code.
+  \item NOME_TIPO_ELEICAO: Election type.
+  \item COD_ELEICAO: Election code.
+  \item DATA_ELEICAO: Election date.
+  \item ABRANGENCIA: Election scope.
+  \item NOME_UE: Electoral unit name.
+  \item NOME_SOCIAL_CANDIDATO: Candidate's social name.
+  \item TIPO_AGREMIACAO: Type of partisan ticket (electoral coalition or single party).
+}
 }
 \description{
 \code{vote_mun_zone_fed()} downloads and aggregates data on the verification of federal elections in Brazil,
@@ -64,7 +80,7 @@ If export is set to \code{TRUE}, the downloaded data is saved as .dta and .sav
  files in the current directory.
 }
 \note{
-For the elections prior to 2002, some information can be incomplete. For the 2014 electios, one more variable is available.
+For the elections prior to 2002, some information can be incomplete. For the 2014 and 2018 elections, more variable are available.
 }
 \examples{
 \dontrun{

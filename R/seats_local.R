@@ -49,7 +49,7 @@
 #' df <- seats_local(2000)
 #' }
 
-seats_local <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
+seats_local <- function(year, uf = "all", ascii = FALSE, encoding = "latin1", export = FALSE){
   
   
   # Input tests
@@ -68,14 +68,21 @@ seats_local <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", e
   
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados(uf, encoding)
+  banco <- juntaDados(uf, encoding, FALSE)
   setwd("..")
   unlink(as.character(year), recursive = T)
   
   # Change variable names
-  names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "DESCRICAO_ELEICAO",
+if( year < 2016 ){
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "DESCRICAO_ELEICAO",
                     "SIGLA_UF", "SIGLA_UE", "NOME_UE", "CODIGO_CARGO", "DESCRICAO_CARGO",
                     "QTDE_VAGAS")
+ } else{
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "COD_TIPO_ELEICAO", 
+                      "NOME_TIPO_ELEICAO", "COD_ELEICAO", "DESCRICAO_ELEICAO", 
+                      "DATA_ELEICAO", "DATA_POSSE", "SIGLA_UF", "SIGLA_UE", "NOME_UE",        
+                      "CODIGO_CARGO", "DESCRICAO_CARGO", "QTDE_VAGAS" )
+  }
   
   # Change to ascii
   if(ascii) banco <- to_ascii(banco, encoding)

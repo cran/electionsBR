@@ -4,12 +4,16 @@
 #' disaggregated by cities and electoral zone. The function returns a \code{data.frame} where each observation
 #' corresponds to a city/zone.
 #'
-#' @note For the elections prior to 2002, some information can be incomplete. For the 2014 electios, one more variable is available.
+#' @note For the elections prior to 2002, some information can be incomplete. For the 2014 and 2018 elections, more variable are available.
 #'
 #' @param year Election year. For this function, only the years 1998, 2002, 2006, 2010, and 2014
 #' are available.
 #' 
 #' @param uf Federation Unit acronym (\code{character vector}).
+#' 
+#' @param br_archive In the TSE's data repository, some results can be obtained for the whole country by loading a single
+#' within a single file by setting this argument to \code{TRUE} (may not work in for some elections and, in 
+#' other, it recoverns only electoral data for presidential elections, absent in other files).
 #'
 #' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
 #'
@@ -53,6 +57,18 @@
 #'   \item TOTAL_VOTOS: Total of votes.
 #'   \item TRANSITO: It informs whether the record relates or not to absentee ballot votes (only for 2014 election).
 #'  }
+#'  
+#' From 2018 on, some new variables are also available:
+#' \itemize{
+#'   \item COD_TIPO_ELEICAO: Election type code.
+#'   \item NOME_TIPO_ELEICAO: Election type.
+#'   \item COD_ELEICAO: Election code.
+#'   \item DATA_ELEICAO: Election date.
+#'   \item ABRANGENCIA: Election scope.
+#'   \item NOME_UE: Electoral unit name.
+#'   \item NOME_SOCIAL_CANDIDATO: Candidate's social name.
+#'   \item TIPO_AGREMIACAO: Type of partisan ticket (electoral coalition or single party).
+#'}
 #'
 #' @seealso \code{\link{vote_mun_zone_local}} for local elections in Brazil.
 #'
@@ -64,13 +80,14 @@
 #' df <- vote_mun_zone_fed(2002)
 #' }
 
-vote_mun_zone_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
+vote_mun_zone_fed <- function(year, uf = "all",  br_archive = FALSE, ascii = FALSE, encoding = "latin1", export = FALSE){
 
 
   # Test the input
   test_encoding(encoding)
   test_fed_year(year)
   uf <- test_uf(uf)
+  test_br(br_archive)
 
   # Download the data
   dados <- tempfile()
@@ -83,7 +100,7 @@ vote_mun_zone_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin
 
   # Clean the data
   setwd(as.character(year))
-  banco <- juntaDados(uf, encoding)
+  banco <- juntaDados(uf, encoding, br_archive)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -97,14 +114,25 @@ vote_mun_zone_fed <- function(year, uf = "all", ascii = FALSE, encoding = "Latin
                       "SIGLA_PARTIDO", "NOME_PARTIDO", "SEQUENCIAL_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA",
                       "TOTAL_VOTOS")
 
-  } else {
-    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
-                      "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
-                      "CODIGO_CARGO", "NUMERO_CAND", "SQ_CANDIDATO", "NOME_CANDIDATO", "NOME_URNA_CANDIDATO",
-                      "DESCRICAO_CARGO", "COD_SIT_CAND_SUPERIOR", "DESC_SIT_CAND_SUPERIOR", "CODIGO_SIT_CANDIDATO",
-                      "DESC_SIT_CANDIDATO", "CODIGO_SIT_CAND_TOT", "DESC_SIT_CAND_TOT", "NUMERO_PARTIDO",
-                      "SIGLA_PARTIDO", "NOME_PARTIDO", "SEQUENCIAL_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA",
-                      "TOTAL_VOTOS", "TRANSITO")
+  }else if(year == 2014) { 
+      names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
+                        "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
+                        "CODIGO_CARGO", "NUMERO_CAND", "SQ_CANDIDATO", "NOME_CANDIDATO", "NOME_URNA_CANDIDATO",
+                        "DESCRICAO_CARGO", "COD_SIT_CAND_SUPERIOR", "DESC_SIT_CAND_SUPERIOR", "CODIGO_SIT_CANDIDATO",
+                        "DESC_SIT_CANDIDATO", "CODIGO_SIT_CAND_TOT", "DESC_SIT_CAND_TOT", "NUMERO_PARTIDO",
+                        "SIGLA_PARTIDO", "NOME_PARTIDO", "SEQUENCIAL_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA",
+                        "TOTAL_VOTOS", "TRANSITO")
+  } else{
+      names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "COD_TIPO_ELEICAO",         
+                        "NOME_TIPO_ELEICAO", "NUM_TURNO", "COD_ELEICAO", "DESCRICAO_ELEICAO",              
+                        "DATA_ELEICAO", "ABRANGENCIA", "SIGLA_UF", "SIGLA_UE", "NOME_UE",                   
+                        "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA", "CODIGO_CARGO",                
+                        "DESCRICAO_CARGO", "SQ_CANDIDATO", "NUMERO_CAND",  "NOME_CANDIDATO",          
+                        "NOME_URNA_CANDIDATO", "NOME_SOCIAL_CANDIDATO", "CODIGO_SIT_CANDIDATO", 
+                        "DESC_SIT_CANDIDATO", "COD_SIT_CAND_SUPERIOR", "DESC_SIT_CAND_SUPERIOR",
+                        "TIPO_AGREMIACAO", "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO",          
+                        "SEQUENCIAL_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA", 
+                        "CODIGO_SIT_CAND_TOT", "DESC_SIT_CAND_TOT", "TRANSITO", "TOTAL_VOTOS")
   }
   
   # Change to ascii

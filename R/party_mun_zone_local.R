@@ -62,7 +62,7 @@
 #' }
 
 
-party_mun_zone_local <- function(year, uf = "all", ascii = FALSE, encoding = "Latin-1", export = FALSE){
+party_mun_zone_local <- function(year, uf = "all", ascii = FALSE, encoding = "latin1", export = FALSE){
 
 
   # Test the input
@@ -82,7 +82,7 @@ party_mun_zone_local <- function(year, uf = "all", ascii = FALSE, encoding = "La
 
   # Cleans the data
   setwd(as.character(year))
-  banco <- juntaDados(uf, encoding)
+  banco <- juntaDados(uf, encoding, FALSE)
   setwd("..")
   unlink(as.character(year), recursive = T)
 
@@ -95,12 +95,13 @@ party_mun_zone_local <- function(year, uf = "all", ascii = FALSE, encoding = "La
                       "QTDE_VOTOS_LEGENDA", "SEQUENCIAL_LEGENDA")
   } else {
     
-    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "NUM_TURNO", "DESCRICAO_ELEICAO",
-                      "SIGLA_UF", "SIGLA_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA",
-                      "CODIGO_CARGO", "DESCRICAO_CARGO", "TIPO_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA",
-                      "SIGLA_PARTIDO", "NUMERO_PARTIDO", "NOME_PARTIDO", "QTDE_VOTOS_NOMINAIS",
-                      "QTDE_VOTOS_LEGENDA", "TRANSITO", "SEQUENCIAL_LEGENDA")
-  }
+    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "COD_TIPO_ELEICAO", "NOME_TIPO_ELEICAO",
+                      "NUM_TURNO", "COD_ELEICAO", "DESCRICAO_ELEICAO", "DATA_ELEICAO", "ABRANGENCIA", "SIGLA_UF",
+                      "SIGLA_UE", "NOME_UE", "CODIGO_MUNICIPIO", "NOME_MUNICIPIO", "NUMERO_ZONA", "CODIGO_CARGO",
+                      "DESCRICAO_CARGO", "TIPO_LEGENDA", "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO",     
+                      "SEQUENCIAL_LEGENDA", "NOME_COLIGACAO", "COMPOSICAO_LEGENDA", "TRANSITO", "QTDE_VOTOS_NOMINAIS",
+                      "QTDE_VOTOS_LEGENDA")
+ }
     
   # Change to ascii
   if(ascii == T) banco <- to_ascii(banco, encoding)
