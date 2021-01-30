@@ -4,8 +4,14 @@
 \alias{legend_local}
 \title{Download data on local election coalitions in Brazil}
 \usage{
-legend_local(year, uf = "all", ascii = FALSE, encoding = "latin1",
-  export = FALSE)
+legend_local(
+  year,
+  uf = "all",
+  ascii = FALSE,
+  encoding = "latin1",
+  export = FALSE,
+  temp = TRUE
+)
 }
 \arguments{
 \item{year}{Election year. For this function, only the years  2008, 2012 and 2016
@@ -19,6 +25,8 @@ are available.}
 when \code{ascii = TRUE}.}
 
 \item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
+
+\item{temp}{(\code{logical}). If \code{TRUE}, keep the temporary compressed file for future use (recommended)}
 }
 \value{
 \code{legend_local()} returns a \code{data.frame} with the following variables:

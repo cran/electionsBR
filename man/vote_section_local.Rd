@@ -4,11 +4,17 @@
 \alias{vote_section_local}
 \title{Download data on candidate electoral results in local elections in Brazil by electoral section}
 \usage{
-vote_section_local(year, uf = "AC", ascii = FALSE,
-  encoding = "latin1", export = FALSE)
+vote_section_local(
+  year,
+  uf = "AC",
+  ascii = FALSE,
+  encoding = "latin1",
+  export = FALSE,
+  temp = TRUE
+)
 }
 \arguments{
-\item{year}{Election year. For this function, only the years 1996, 2000, 2004, 2008, 2012 and 2016
+\item{year}{Election year. For this function, only the years 1996, 2000, 2004, 2008, 2012, 2016 and 2020
 are available.}
 
 \item{uf}{Federation Unit acronym (\code{character vector}). Defaults to \code{'AC'} (Acre).}
@@ -19,6 +25,8 @@ are available.}
 when \code{ascii = TRUE}.}
 
 \item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
+
+\item{temp}{(\code{logical}). If \code{TRUE}, keep the temporary compressed file for future use (recommended)}
 }
 \value{
 \code{vote_section_local()} returns a \code{data.frame} with the following variables:

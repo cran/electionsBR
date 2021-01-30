@@ -4,11 +4,18 @@
 \alias{seats_fed}
 \title{Download data on the number of seats under dispute in federal elections}
 \usage{
-seats_fed(year, uf = "all", br_archive = FALSE, ascii = FALSE,
-  encoding = "latin1", export = FALSE)
+seats_fed(
+  year,
+  uf = "all",
+  br_archive = FALSE,
+  ascii = FALSE,
+  encoding = "latin1",
+  export = FALSE,
+  temp = TRUE
+)
 }
 \arguments{
-\item{year}{Election year. For this function, only the years of 1996, 2000, 2004, 2008, 2012 and 2016
+\item{year}{Election year. For this function, only the years of 1998, 2002, 2006, 2010, 2014 and 2018
 are available.}
 
 \item{uf}{Federation Unit acronym (\code{character} vector).}
@@ -23,6 +30,8 @@ other, it recoverns only electoral data for presidential elections, absent in ot
 when \code{ascii = TRUE}.}
 
 \item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
+
+\item{temp}{(\code{logical}). If \code{TRUE} keep temporary compressed file}
 }
 \value{
 \code{seats_fed()} returns a \code{data.frame} with the following variables:

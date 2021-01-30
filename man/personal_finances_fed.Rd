@@ -4,8 +4,15 @@
 \alias{personal_finances_fed}
 \title{Download data on federal candidates' personal financial disclosures}
 \usage{
-personal_finances_fed(year, uf = "all", br_archive = FALSE,
-  ascii = FALSE, encoding = "latin1", export = FALSE)
+personal_finances_fed(
+  year,
+  uf = "all",
+  br_archive = FALSE,
+  ascii = FALSE,
+  encoding = "latin1",
+  export = FALSE,
+  temp = TRUE
+)
 }
 \arguments{
 \item{year}{Election year. For this function, only the years 2006, 2010, 2014 and 2018 are available.}
@@ -22,6 +29,8 @@ other, it recoverns only electoral data for presidential elections, absent in ot
 when \code{ascii = TRUE}.}
 
 \item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
+
+\item{temp}{(\code{logical}). If \code{TRUE}, keep the temporary compressed file for future use (recommended)}
 }
 \value{
 \code{assets_candidate_local()} returns a \code{data.frame} with the following variables:

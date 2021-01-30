@@ -4,8 +4,15 @@
 \alias{party_mun_zone_fed}
 \title{Download data on the polls by parties from federal elections in Brazil}
 \usage{
-party_mun_zone_fed(year, uf = "all", br_archive = FALSE,
-  ascii = FALSE, encoding = "latin1", export = FALSE)
+party_mun_zone_fed(
+  year,
+  uf = "all",
+  br_archive = FALSE,
+  ascii = FALSE,
+  encoding = "latin1",
+  export = FALSE,
+  temp = TRUE
+)
 }
 \arguments{
 \item{year}{Election year. For this function, only the years 1994, 1998, 2002, 2006, 2010, 2014 and 2018
@@ -23,6 +30,8 @@ other, it recoverns only electoral data for presidential elections, absent in ot
 when \code{ascii = TRUE}.}
 
 \item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
+
+\item{temp}{(\code{logical}). If \code{TRUE}, keep the temporary compressed file for future use (recommended)}
 }
 \value{
 \code{party_mun_zone_fed()} returns a \code{data.frame} with the following variables:

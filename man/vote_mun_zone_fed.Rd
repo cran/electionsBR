@@ -4,11 +4,18 @@
 \alias{vote_mun_zone_fed}
 \title{Download data on candidate electoral results in federal elections in Brazil}
 \usage{
-vote_mun_zone_fed(year, uf = "all", br_archive = FALSE,
-  ascii = FALSE, encoding = "latin1", export = FALSE)
+vote_mun_zone_fed(
+  year,
+  uf = "all",
+  br_archive = FALSE,
+  ascii = FALSE,
+  encoding = "latin1",
+  export = FALSE,
+  temp = TRUE
+)
 }
 \arguments{
-\item{year}{Election year. For this function, only the years 1998, 2002, 2006, 2010, and 2014
+\item{year}{Election year. For this function, only the years 1998, 2002, 2006, 2010, 2014, and 2018
 are available.}
 
 \item{uf}{Federation Unit acronym (\code{character vector}).}
@@ -23,6 +30,8 @@ other, it recoverns only electoral data for presidential elections, absent in ot
 when \code{ascii = TRUE}.}
 
 \item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
+
+\item{temp}{(\code{logical}). If \code{TRUE}, keep the temporary compressed file for future use (recommended)}
 }
 \value{
 \code{vote_mun_zone_fed()} returns a \code{data.frame} with the following variables:

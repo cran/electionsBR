@@ -4,7 +4,7 @@
 #' The function returns a \code{data.frame} where each observation corresponds to a voter profile type.
 #'
 #' @param year Election year (\code{integer}). For this function, the following years are available: 1994, 1996, 1998,
-#' 2000, 2002, 2004, 2006, 2008, 2010, 2012, 2014 and 2016.
+#' 2000, 2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016, 2018 and 2020.
 #' 
 #' @param ascii (\code{logical}). Should the text be transformed from Latin-1 to ASCII format?
 #'
@@ -12,6 +12,8 @@
 #' when \code{ascii = TRUE}.
 #' 
 #' @param export (\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?
+#' 
+#' @param temp (\code{logical}). If \code{TRUE}, keep the temporary compressed file for future use (recommended)
 #'
 #' @details If export is set to \code{TRUE}, the downloaded data is saved as .dta and .sav
 #'  files in the current directory.
@@ -38,23 +40,34 @@
 #' df <- voter_profile(2002)
 #' }
 
-voter_profile <- function(year, ascii = FALSE, encoding = "windows-1252", export = FALSE){
+voter_profile <- function(year, ascii = FALSE, 
+                          encoding = "windows-1252",
+                          export = FALSE,
+                          temp = TRUE){
   
   
   # Inputs
-  if(!year %in% seq(1994, 2018, by = 2)) stop("Invalid 'year'. Please check the documentation and try again.")
+  if(!year %in% seq(1994, 2020, by = 2)) stop("Invalid 'year'. Please check the documentation and try again.")
   test_encoding(encoding)
   
-  # Download data
-  dados <- tempfile()
-
-  sprintf("http://agencia.tse.jus.br/estatistica/sead/odsele/perfil_eleitorado/perfil_eleitorado_%s.zip", year) %>%
-    download.file(dados)
-  unzip(dados, exdir = paste0("./", year))
-  unlink(dados)
+  #if(year == 2020){
+  #  urldir <- "http://agencia.tse.jus.br/estatistica/sead/odsele/perfil_eleitorado/perfil_eleitorado_ATUAL.zip"
+  #} else{
+  #   urldir <- sprintf("http://agencia.tse.jus.br/estatistica/sead/odsele/perfil_eleitorado/perfil_eleitorado_%s.zip", year) 
+  #  }
   
-  # Join data
-  message("Processing the data...")
+  filenames  <- paste0("/perfil_eleitorado_", year, ".zip")
+  dados <- paste0(file.path(tempdir()), filenames)
+  url <- "https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitorado%s"
+  
+  # Downloads the data
+  download_unzip(url, dados, filenames, year)
+  
+  # remover temp file
+  if(temp == FALSE){
+    unlink(dados)
+  }
+  
     
   setwd(as.character(year))
   
@@ -70,7 +83,7 @@ voter_profile <- function(year, ascii = FALSE, encoding = "windows-1252", export
   }
   
   banco <- readr::read_delim(archive, col_names = test_col_names, delim = ";", locale = readr::locale(encoding = encoding), col_types = readr::cols(), progress = F) %>%
-    dplyr::as.tbl()
+    dplyr::as_tibble()
   
   setwd("..")
   unlink(as.character(year), recursive = T)

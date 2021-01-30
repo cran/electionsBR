@@ -26,10 +26,12 @@ uf_br <- function() {
 
 parties_br <- function() {
   
-  c("PPS", "PSB", "PSOL", "PP", "PSL", "PR", "PSDB", "PDT", "PSDC", 
-    "PHS", "PT", "PROS", "PTC", "PSC", "PC do B", "PRB", "PMDB", 
-    "DEM", "PMB", "PTB", "PEN", "PTN", "SD", "PMN", "PT do B", "PSD", 
-    "PV", "PRP", "REDE", "PPL", "PRTB", "PSTU", "PCB", "PCO", "NOVO")
+  c("AVANTE", "CIDADANIA", "DC", "DEM", "MDB", "NOVO", "PATRIOTA", 
+    "PC do B", "PCB", "PCO", "PDT", "PEN", "PHS", "PMB", "PMN", "PODE", 
+    "PP", "PPL", "PPS", "PR", "PRB", "PROS", "PRP", "PRTB", "PSB", 
+    "PSC", "PSD", "PSDB", "PSDC", "PSL", "PSOL", "PSTU", "PT", "PT do B", 
+    "PTB", "PTC", "PTN", "PV", "REDE", "REPUBLICANOS", "SD", "SOLIEDARIEDADE", 
+    "UP")
 }
 
 
@@ -58,10 +60,15 @@ juntaDados <- function(uf, encoding, br_archive){
      test_col_names <- FALSE
    }
    
-  lapply(archive, function(x) tryCatch(suppressWarnings(readr::read_delim(x, col_names = test_col_names, delim = ";", locale = readr::locale(encoding = encoding), col_types = readr::cols(), progress = F)), 
+  lapply(archive, function(x) tryCatch(
+    suppressWarnings(readr::read_delim(x, col_names = test_col_names, 
+                                       delim = ";",
+                                       locale = readr::locale(encoding = encoding), 
+                                       col_types = readr::cols(), progress = F,
+                                       escape_double = F)), 
                                 error = function(e) NULL)) %>%
   data.table::rbindlist() %>%
-  dplyr::as.tbl()
+  dplyr::as_tibble()
 
 }
 
@@ -85,7 +92,7 @@ test_fed_year <- function(year){
 # Tests federal election year inputs
 test_local_year <- function(year){
 
-  if(!is.numeric(year) | length(year) != 1 | !year %in% seq(1996, 2016, 4)) stop("Invalid input. Please, check the documentation and try again.")
+  if(!is.numeric(year) | length(year) != 1 | !year %in% seq(1996, 2020, 4)) stop("Invalid input. Please, check the documentation and try again.")
 }
 
 
@@ -157,6 +164,25 @@ export_data <- function(df) {
   haven::write_dta(df, "electoral_data.dta")
   haven::write_sav(df, "electoral_data.sav")
   message(paste0("Electoral data files were saved on: ", getwd(), ".\n"))
+}
+
+
+# Data download
+download_unzip <- function(url, dados, filenames, year){
+  
+  if(!file.exists(dados)){
+    
+    sprintf(url, filenames) %>%
+      download.file(dados)
+    
+    message("Processing the data...")
+    unzip(dados, exdir = paste0("./", year))
+    
+  } else{
+    
+    message("Processing the data...")
+    unzip(dados, exdir = paste0("./", year))
+  }
 }
 
 

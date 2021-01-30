@@ -21,6 +21,8 @@
 #' when \code{ascii = TRUE}.
 #' 
 #' @param export (\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?
+#' 
+#' @param temp (\code{logical}). elections_rda
 #'
 #' @details If export is set to \code{TRUE}, the downloaded data is saved as .dta and .sav
 #'  files in the current directory.
@@ -112,7 +114,9 @@
 #' df <- candidate_fed(2002)
 #' }
 
-candidate_fed <- function(year, uf = "all", br_archive = FALSE, ascii = FALSE, encoding = "latin1", export = FALSE){
+candidate_fed <- function(year, uf = "all", br_archive = FALSE,
+                          ascii = FALSE, encoding = "latin1", 
+                          export = FALSE, temp = TRUE){
 
 
   # Input tests
@@ -121,14 +125,17 @@ candidate_fed <- function(year, uf = "all", br_archive = FALSE, ascii = FALSE, e
   uf <- test_uf(uf)
   test_br(br_archive)
 
-  # Download the data
-  dados <- tempfile()
-  sprintf("http://agencia.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_%s.zip", year) %>%
-    download.file(dados)
-  unzip(dados, exdir = paste0("./", year))
-  unlink(dados)
-
-  message("Processing the data...")
+  filenames  <- paste0("/consulta_cand_", year, ".zip")
+  dados <- paste0(file.path(tempdir()), filenames)
+  url <- "https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand%s"
+  
+  # Downloads the data
+  download_unzip(url, dados, filenames, year)
+  
+  # remover temp file
+  if(temp == FALSE){
+    unlink(dados)
+  }
 
   # Cleans the data
   setwd(as.character(year))
@@ -151,22 +158,6 @@ candidate_fed <- function(year, uf = "all", br_archive = FALSE, ascii = FALSE, e
                       "NOME_MUNICIPIO_NASCIMENTO", "DESPESA_MAX_CAMPANHA", "COD_SIT_TOT_TURNO",
                       "DESC_SIT_TOT_TURNO")
 
-  }else{
-    names(banco) <- c("DATA_GERACAO", "HORA_GERACAO", "ANO_ELEICAO", "COD_TIPO_ELEICAO", "NOME_TIPO_ELEICAO",
-                      "NUM_TURNO", "COD_ELEICAO", "DESCRICAO_ELEICAO", "DATA_ELEICAO", "ABRANGENCIA", 
-                      "SIGLA_UF", "SIGLA_UE", "DESCRICAO_UE", "CODIGO_CARGO", "DESCRICAO_CARGO", 
-                      "SEQUENCIAL_CANDIDATO", "NUMERO_CANDIDATO", "NOME_CANDIDATO", "NOME_URNA_CANDIDATO", 
-                      "NOME_SOCIAL_CANDIDATO", "CPF_CANDIDATO", "EMAIL_CANDIDATO", "COD_SITUACAO_CANDIDATURA",
-                      "DES_SITUACAO_CANDIDATURA", "COD_DETALHE_SITUACAO_CAND", "DES_DETALHE_SITUACAO_CAND",
-                      "TIPO_AGREMIACAO", "NUMERO_PARTIDO", "SIGLA_PARTIDO", "NOME_PARTIDO", "CODIGO_LEGENDA",
-                      "NOME_COLIGACAO", "COMPOSICAO_LEGENDA", "CODIGO_NACIONALIDADE", "DESCRICAO_NACIONALIDADE",
-                      "SIGLA_UF_NASCIMENTO", "CODIGO_MUNICIPIO_NASCIMENTO", "NOME_MUNICIPIO_NASCIMENTO",
-                      "DATA_NASCIMENTO", "IDADE_DATA_POSSE", "NUM_TITULO_ELEITORAL_CANDIDATO", "CODIGO_SEXO",
-                      "DESCRICAO_SEXO", "COD_GRAU_INSTRUCAO", "DESCRICAO_GRAU_INSTRUCAO", "CODIGO_ESTADO_CIVIL",
-                      "DESCRICAO_ESTADO_CIVIL", "CODIGO_COR_RACA", "DESCRICAO_COR_RACA", "CODIGO_OCUPACAO", 
-                      "DESCRICAO_OCUPACAO", "DESPESA_MAX_CAMPANHA", "COD_SIT_TOT_TURNO", "DESC_SIT_TOT_TURNO",
-                      "SITUACAO_REELEICAO", "SITUACAO_DECLARAR_BENS", "NUMERO_PROTOCOLO_CANDIDATURA", 
-                      "NUMERO_PROCESSO")
   }
   
   # Change to ascii

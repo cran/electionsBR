@@ -4,11 +4,17 @@
 \alias{candidate_local}
 \title{Download data on the candidates' background in local elections}
 \usage{
-candidate_local(year, uf = "all", ascii = FALSE, encoding = "latin1",
-  export = FALSE)
+candidate_local(
+  year,
+  uf = "all",
+  ascii = FALSE,
+  encoding = "latin1",
+  export = FALSE,
+  temp = TRUE
+)
 }
 \arguments{
-\item{year}{Election year. For this function, onlye the years of 1996, 2000, 2004, 2008, 2012 and 2016
+\item{year}{Election year. For this function, onlye the years of 1996, 2000, 2004, 2008, 2012, 2016, and 2020
 are available.}
 
 \item{uf}{Federation Unit acronym (\code{character vector}).}
@@ -19,6 +25,8 @@ are available.}
 when \code{ascii = TRUE}.}
 
 \item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
+
+\item{temp}{(\code{logical}). elections_rda}
 }
 \value{
 \code{candidate_local()} returns a \code{data.frame} with the following variables:

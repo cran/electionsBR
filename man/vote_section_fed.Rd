@@ -4,8 +4,14 @@
 \alias{vote_section_fed}
 \title{Download data on candidate electoral results in federal elections in Brazil by electoral section}
 \usage{
-vote_section_fed(year, uf = "AC", ascii = FALSE, encoding = "latin1",
-  export = FALSE)
+vote_section_fed(
+  year,
+  uf = "AC",
+  ascii = FALSE,
+  encoding = "latin1",
+  export = FALSE,
+  temp = TRUE
+)
 }
 \arguments{
 \item{year}{Election year. For this function, only the years 1998, 2002, 2006, 2010, and 2014
@@ -19,6 +25,8 @@ are available.}
 when \code{ascii = TRUE}.}
 
 \item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
+
+\item{temp}{(\code{logical}). If \code{TRUE}, keep the temporary compressed file for future use (recommended)}
 }
 \value{
 \code{vote_section_fed()} returns a \code{data.frame} with the following variables:
