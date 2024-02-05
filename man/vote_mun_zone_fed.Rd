@@ -8,10 +8,9 @@ vote_mun_zone_fed(
   year,
   uf = "all",
   br_archive = FALSE,
-  ascii = FALSE,
   encoding = "latin1",
-  export = FALSE,
-  temp = TRUE
+  temp = TRUE,
+  readme_pdf = FALSE
 )
 }
 \arguments{
@@ -24,60 +23,15 @@ are available.}
 within a single file by setting this argument to \code{TRUE} (may not work in for some elections and, in 
 other, it recoverns only electoral data for presidential elections, absent in other files).}
 
-\item{ascii}{(\code{logical}). Should the text be transformed from Latin-1 to ASCII format?}
-
 \item{encoding}{Data original encoding (defaults to 'Latin-1'). This can be changed to avoid errors
 when \code{ascii = TRUE}.}
 
-\item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
-
 \item{temp}{(\code{logical}). If \code{TRUE}, keep the temporary compressed file for future use (recommended)}
+
+\item{readme_pdf}{original readme}
 }
 \value{
 \code{vote_mun_zone_fed()} returns a \code{data.frame} with the following variables:
-
-\itemize{
-  \item DATA_GERACAO: Generation date of the file (when the data was collected).
-  \item HORA_GERACAO: Generation time of the file (when the data was collected), Brasilia Time.
-  \item ANO_ELEICAO: Election year.
-  \item NUM_TURNO: Round number.
-  \item DESCRICAO_ELEICAO: Description of the election.
-  \item SIGLA_UF: Units of the Federation's acronym in which occurred the election.
-  \item SIGLA_UE: Units of the Federation's acronym (In case of major election is the FU's
-  acronym in which the candidate runs for (text) and in case of municipal election is the
-  municipal's Supreme Electoral Court code (number)). Assume the special values BR, ZZ and
-  VT to designate, respectively, Brazil, Overseas and Absentee Ballot.
-  \item CODIGO_MUNICIPIO: Supreme Electoral code from the city where occurred the election.
-  \item NOME_MUNICIPIO: Name of the city where occurred the election.
-  \item NUMERO_ZONA: Zone number.
-  \item CODIGO_CARGO: Code of the position that the candidate runs for.
-  \item NUMERO_CANDIDATO: Candidate's number in the ballot box.
-  \item SQ_CANDIDATO: Candidate's sequence number generated internally by the electoral
-  \item NOME_CANDIDATO: Candidate's complete name.
-  \item NOME_URNA_CANDIDATO: Candidate's ballot box name.
-  \item DESCRICAO_CARGO: Description of the position that the candidate runs for.
-  \item COD_SIT_CAND_TOT: Candidate's totalization status code in that election round.
-  \item NUMERO_PARTIDO: Party number.
-  \item SIGLA_PARTIDO: Party's acronym.
-  \item NOME_PARTIDO: Party name.
-  \item SEQUENCIAL_LEGENDA: Coalition's sequential number, generated internally by the electoral justice.
-  \item NOME_COLIGACAO: COalition name.
-  \item COMPOSICAO_LEGENDA: Coalition's composition.
-  \item TOTAL_VOTOS: Total of votes.
-  \item TRANSITO: It informs whether the record relates or not to absentee ballot votes (only for 2014 election).
- }
- 
-From 2018 on, some new variables are also available:
-\itemize{
-  \item COD_TIPO_ELEICAO: Election type code.
-  \item NOME_TIPO_ELEICAO: Election type.
-  \item COD_ELEICAO: Election code.
-  \item DATA_ELEICAO: Election date.
-  \item ABRANGENCIA: Election scope.
-  \item NOME_UE: Electoral unit name.
-  \item NOME_SOCIAL_CANDIDATO: Candidate's social name.
-  \item TIPO_AGREMIACAO: Type of partisan ticket (electoral coalition or single party).
-}
 }
 \description{
 \code{vote_mun_zone_fed()} downloads and aggregates data on the verification of federal elections in Brazil,
@@ -95,7 +49,4 @@ For the elections prior to 2002, some information can be incomplete. For the 201
 \dontrun{
 df <- vote_mun_zone_fed(2002)
 }
-}
-\seealso{
-\code{\link{vote_mun_zone_local}} for local elections in Brazil.
 }

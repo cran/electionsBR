@@ -12,94 +12,107 @@
 
 <meta name="author" content="Fernando Meireles, Denisson Silva, Beatriz Costa" />
 
-<meta name="date" content="2021-01-30" />
+<meta name="date" content="2024-02-05" />
 
 <title>Introduction to the electionsBR package</title>
 
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
   }
 });
 </script>
 
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
-<style type="text/css">code{white-space: pre;}</style>
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-  { counter-reset: source-line 0; }
+{ counter-reset: source-line 0; }
 pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
+{ position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -108,13 +121,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -122,6 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -317,204 +338,220 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Introduction to the electionsBR package</h1>
+<h1 class="title toc-ignore">Introduction to the electionsBR
+package</h1>
 <h4 class="author">Fernando Meireles, Denisson Silva, Beatriz Costa</h4>
-<h4 class="date">2021-01-30</h4>
+<h4 class="date">2024-02-05</h4>
 
 
 
-<pre><code>## 
-## To cite electionsBR in publications, use: citation(&#39;electionsBR&#39;)</code></pre>
-<pre><code>## To learn more, visit: http://electionsbr.com</code></pre>
-<div id="overview" class="section level2">
-<h2>Overview</h2>
-<p><code>electionsBR</code> is an <code>R</code> package used to pull and clean Brazilian electoral data, directly from the Superior Electoral Court (TSE) <a href="http://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais">website</a>. Among others, <code>electionsBR</code> retrieves data on electoral results, candidates’ personal and professional backgrounds, parties’ electoral performances, electoral coalitions, available seats under dispute, and voters’ profile.</p>
-</div>
+<p>Thanks to the <a href="https://dadosabertos.tse.jus.br/">Superior
+Electoral Court (TSE)</a>, any person with an internet connection can
+access a wide range of Brazil’s electoral data. However, the TSE website
+used to lack a user-friendly interface, and the data was not available
+in a tidy format until very recently, which made it difficult to use
+these data in <code>R</code> for research purposes. In a nutshell, this
+was our main motivation to develop the <code>electionsBR</code>, an
+<code>R</code> package specifically designed to retrieve and clean
+Brazilian electoral data directly from the TSE website, making it easy
+and fast to obtain electoral data in a tidy format.</p>
+<p>At its core, <code>electionsBR</code> provides a comprehensive set of
+functions that download and clean various types of information using
+modern backends available in <code>R</code> to handle data retrieving,
+importing, and transforming. With this, users can access data that
+includes candidates’ personal and professional backgrounds, parties’
+electoral performances, electoral coalitions, available seats under
+dispute, and voters’ profiles.</p>
+<p>In what follows, we provide a brief overview of the package’s main
+features. For a complete list of functions, see the <a href="https://cran.r-project.org/package=electionsBR">package’s
+reference manual</a>.</p>
 <div id="how-to-install" class="section level2">
 <h2>How to install</h2>
-<p>Since the version <code>0.1.1</code>, <code>electionsBR</code> is on CRAN and can be installed with:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">install.packages</span>(<span class="st">&quot;electionsBR&quot;</span>)</span></code></pre></div>
-<p>You can install these pre-release versions from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="cf">if</span> (<span class="op">!</span><span class="kw">require</span>(<span class="st">&quot;devtools&quot;</span>)) <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
-<span id="cb4-2"><a href="#cb4-2"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;silvadenisson/electionsBR&quot;</span>)</span></code></pre></div>
+<p>Since version <code>0.1.1</code>, the easiest way to install
+<code>electionsBR</code> is to use the <code>install.packages</code>
+function:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;electionsBR&quot;</span>)</span></code></pre></div>
+<p>Frequently, however, the CRAN version is not the most recent one. In
+these cases, pre-release versions from <a href="https://github.com/">GitHub</a>, you can use the following
+command:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">&quot;devtools&quot;</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;silvadenisson/electionsBR&quot;</span>)</span></code></pre></div>
 </div>
-<div id="how-to-use" class="section level2">
-<h2>How to use</h2>
-<p>No previous experience with <code>R</code> is required to use the <code>electionsBR</code> package. In fact, it takes only two lines of code to download, clean and export (to <a href="https://www.stata.com/">Stata</a> and <a href="https://www.ibm.com/analytics/us/en/technology/spss/">SPSS</a> formats) Brazilian electoral data. For example, here is how we get a full, cleaned dataset with electoral results for the 2010 Federal election:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">install.packages</span>(<span class="st">&quot;electionsBR&quot;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a>electionsBR<span class="op">::</span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">export =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
-<p>By setting the <code>export</code> argument to <code>TRUE</code> in the <code>vote_mun_zone_fed</code> function, the package will download and clean the relevant data directly from the TSE website and save it in the <code>R</code> working directory (the function automatically tells the user where this directory is located) in two different files:</p>
+<div id="usage" class="section level2">
+<h2>Usage</h2>
+<p>No previous experience with <code>R</code> is required to use the
+<code>electionsBR</code> package. In fact, it only takes two lines of
+code to download, clean, and export Brazilian electoral data in <a href="https://www.stata.com/">Stata</a> and <a href="https://www.ibm.com/spss">SPSS</a> formats. For example, you can
+easily obtain a complete and tidy dataset with candidates’ background
+information for the 2010 Federal election using the following code:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;electionsBR&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>electionsBR<span class="sc">::</span><span class="fu">elections_tse</span>(<span class="at">year =</span> <span class="dv">2010</span>, <span class="at">type =</span> <span class="st">&quot;candidate&quot;</span>, <span class="at">export =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>By setting the <code>export</code> argument to <code>TRUE</code> in
+the <code>elections_tse</code> function, the package will download and
+clean the relevant data directly from the TSE website and save it in the
+<code>R</code> working directory (the function automatically tells the
+user where this directory is located) in two different files:</p>
 <ol style="list-style-type: decimal">
 <li><code>electoral_data.dta</code>, to be used with <a href="https://www.stata.com/">Stata</a>;</li>
-<li><code>electoral_data.sav</code>, to be used with <a href="https://www.ibm.com/analytics/us/en/technology/spss/">SPSS</a>.</li>
+<li><code>electoral_data.sav</code>, to be used with <a href="https://www.ibm.com/spss">SPSS</a>.</li>
 </ol>
 </div>
-<div id="data-on-elections-results" class="section level2">
-<h2>Data on elections results</h2>
-<p><code>electionsBR</code>‘s chief functions are the ones used to get electoral results, which includes candidates’ number of votes and electoral status (i.e., elected and non-elected), among many others. To get these data, use <code>vote_mun_zone_</code> functions:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Load the package</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">library</span>(electionsBR)</span>
-<span id="cb6-3"><a href="#cb6-3"></a></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="co"># Use vote_mun_zone_fed function to download 2014 election results</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a>df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2014</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Get results for the 2000 local elections</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_local</span>(<span class="dv">2000</span>)</span></code></pre></div>
+<div id="different-types-of-electoral-data" class="section level2">
+<h2>Different types of electoral data</h2>
+<p><code>electionsBR</code>’s chief function,
+<code>elections_tse</code>, contains the argument <code>type</code>
+(<code>character</code>), which controls the type of electoral data to
+be retrieved. The possible values for <code>type</code> are:</p>
+<ul>
+<li><code>vote_mun_zone</code>: Downloads data on the verification,
+disaggregated by cities and electoral zones.</li>
+<li><code>details_mun_zone</code>: Downloads data on the details,
+disaggregated by town and electoral zone.</li>
+<li><code>legends</code>: Downloads data on the party denomination
+(coalitions or parties), disaggregated by cities.</li>
+<li><code>party_mun_zone</code>: Downloads data on the polls by parties,
+disaggregated by cities and electoral zones.</li>
+<li><code>personal_finances</code>: Downloads data on personal financial
+disclosures. Each observation corresponds to a candidate’s
+property.</li>
+<li><code>seats</code>: Downloads data on the number of seats under
+dispute in elections.</li>
+<li><code>vote_section</code>: Downloads data on candidate electoral
+results in elections in Brazil by electoral section.</li>
+<li><code>voter_profile_by_section</code>: Downloads data on the voters’
+profile by vote section.</li>
+<li><code>voter_profile</code>: Downloads data on the voters’
+profile.</li>
+<li><code>social_media</code>: Downloads data on the candidates’ links
+to social media in federal elections.</li>
+</ul>
+<p>Using the <code>type</code> argument, to download electoral results
+for 2014 federal elections, for example, you can use:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download electoral results for 2014 federal elections</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_tse</span>(<span class="at">year =</span> <span class="dv">2014</span>, <span class="at">type =</span> <span class="st">&quot;vote_mun_zone&quot;</span>)</span></code></pre></div>
+<div id="cepesp-data-integration" class="section level3">
+<h3>CEPESP Data Integration</h3>
+<p>The package also provides an alternative API for downloading data
+from the <a href="https://cepespdata.io/">CEPESP Data</a> project,
+including information on candidates, electoral results, and voters’
+profiles. To download data on candidates in the 2018 presidential
+election, simply use the following code:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_cepesp</span>(<span class="at">year =</span> <span class="dv">2018</span>, <span class="at">type =</span> <span class="st">&quot;candidate&quot;</span>, <span class="at">position =</span> <span class="st">&quot;President&quot;</span>)</span></code></pre></div>
 </div>
-<div id="federal-elections-results" class="section level2">
-<h2>Federal elections results</h2>
-<p>There are also functions used to quickly access presidential and legislative elections results per state and per municipality – with vote proportions (i.e., vote share) reported. To get presidential runoff (second round) results in runoff, use <code>president_</code> functions:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Get presidential electoral results by municipality in tidy format</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a>pres_mun &lt;-<span class="st"> </span><span class="kw">president_mun_vote</span>(<span class="dv">2010</span>, <span class="dt">prop =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb8-3"><a href="#cb8-3"></a></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="co"># Get presidential electoral results by state in tidy format</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a>pres_st &lt;-<span class="st"> </span><span class="kw">president_state_vote</span>(<span class="dv">2010</span>, <span class="dt">prop =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
-<p>To get legislative election results, use instead:</p>
-<pre><code>legislative_mun_vote(year)
-legislative_state_vote(year)</code></pre>
 </div>
-<div id="data-on-running-candidates" class="section level2">
-<h2>Data on running candidates</h2>
-<p>Data on candidates’ party affiliation, ballot number, backgrounds and personal information can be retrieved with <code>candidate_</code> functions:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Get data on candidates running in local elections</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a>df &lt;-<span class="st"> </span><span class="kw">candidate_local</span>(<span class="dv">2016</span>)</span>
-<span id="cb10-3"><a href="#cb10-3"></a></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="co"># Get data on candidates running in federal elections</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a>df &lt;-<span class="st"> </span><span class="kw">candidate_fed</span>(<span class="dv">2016</span>)</span></code></pre></div>
-</div>
-<div id="data-on-parties-and-electoral-coalitions" class="section level2">
-<h2>Data on parties and electoral coalitions</h2>
-<p>Parties’ electoral performances in both local and federal elections, for all electoral positions, are extracted with:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Get data on parties&#39; electoral performances in the federal election of 2006</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a>federal &lt;-<span class="st"> </span><span class="kw">party_mun_zone_fed</span>(<span class="dv">2006</span>)</span>
-<span id="cb11-3"><a href="#cb11-3"></a></span>
-<span id="cb11-4"><a href="#cb11-4"></a><span class="co"># Get data on parties&#39; electoral performances in the local election of 2004</span></span>
-<span id="cb11-5"><a href="#cb11-5"></a>municipal &lt;-<span class="st"> </span><span class="kw">party_mun_zone_local</span>(<span class="dv">2004</span>)</span></code></pre></div>
-<p>To get the composition of electoral coalitions (common in proportional elections), use instead:</p>
-<pre><code>legend_fed(year)
-legend_local(year)</code></pre>
-</div>
-<div id="data-on-voters" class="section level2">
-<h2>Data on voters</h2>
-<p>To get data on voters’ profile in both local and federal elections, use the <code>voter_profile</code> function:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Get data on voters&#39; profile</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>voters02 &lt;-<span class="st"> </span><span class="kw">voter_profile</span>(<span class="dv">2002</span>)</span>
-<span id="cb13-3"><a href="#cb13-3"></a>voters04 &lt;-<span class="st"> </span><span class="kw">voter_profile</span>(<span class="dv">2004</span>)</span></code></pre></div>
-<p>Individual records of partisan affiliation are extracted with the <code>voter_affiliation</code> function:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># PT (Brazilian Workers&#39; Party) in Distrito Federal (DF)</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a>df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span class="st">&quot;PT&quot;</span>, <span class="st">&quot;DF&quot;</span>)</span>
-<span id="cb14-3"><a href="#cb14-3"></a></span>
-<span id="cb14-4"><a href="#cb14-4"></a><span class="co"># PSDB (Brazilian Social Democracy Party) in Sao Paulo (SP)</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a>df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span class="st">&quot;PSDB&quot;</span>, <span class="st">&quot;SP&quot;</span>)</span>
-<span id="cb14-6"><a href="#cb14-6"></a></span>
-<span id="cb14-7"><a href="#cb14-7"></a><span class="co"># PT and PC do B (Brazilian Communist Party) in DF, MG and AL</span></span>
-<span id="cb14-8"><a href="#cb14-8"></a>df &lt;-<span class="st"> </span><span class="kw">voter_affiliation</span>(<span class="kw">c</span>(<span class="st">&quot;PT&quot;</span>, <span class="st">&quot;PC do B&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;DF&quot;</span>, <span class="st">&quot;MG&quot;</span>, <span class="st">&quot;AL&quot;</span>))</span></code></pre></div>
-<p>To consult state abbreviations, use:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">uf_br</span>()</span></code></pre></div>
-<pre><code>##  [1] &quot;AC&quot; &quot;AL&quot; &quot;AM&quot; &quot;AP&quot; &quot;BA&quot; &quot;CE&quot; &quot;DF&quot; &quot;ES&quot; &quot;GO&quot; &quot;MA&quot; &quot;MG&quot; &quot;MS&quot; &quot;MT&quot; &quot;PA&quot; &quot;PB&quot;
-## [16] &quot;PE&quot; &quot;PI&quot; &quot;PR&quot; &quot;RJ&quot; &quot;RN&quot; &quot;RO&quot; &quot;RR&quot; &quot;RS&quot; &quot;SC&quot; &quot;SE&quot; &quot;SP&quot; &quot;TO&quot;</code></pre>
-<p>A <code>character</code> vector with a list os party abbreviations, valid for 2016 elections, can be obtained with:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">parties_br</span>()</span></code></pre></div>
-<pre><code>##  [1] &quot;AVANTE&quot;         &quot;CIDADANIA&quot;      &quot;DC&quot;             &quot;DEM&quot;           
-##  [5] &quot;MDB&quot;            &quot;NOVO&quot;           &quot;PATRIOTA&quot;       &quot;PC do B&quot;       
-##  [9] &quot;PCB&quot;            &quot;PCO&quot;            &quot;PDT&quot;            &quot;PEN&quot;           
-## [13] &quot;PHS&quot;            &quot;PMB&quot;            &quot;PMN&quot;            &quot;PODE&quot;          
-## [17] &quot;PP&quot;             &quot;PPL&quot;            &quot;PPS&quot;            &quot;PR&quot;            
-## [21] &quot;PRB&quot;            &quot;PROS&quot;           &quot;PRP&quot;            &quot;PRTB&quot;          
-## [25] &quot;PSB&quot;            &quot;PSC&quot;            &quot;PSD&quot;            &quot;PSDB&quot;          
-## [29] &quot;PSDC&quot;           &quot;PSL&quot;            &quot;PSOL&quot;           &quot;PSTU&quot;          
-## [33] &quot;PT&quot;             &quot;PT do B&quot;        &quot;PTB&quot;            &quot;PTC&quot;           
-## [37] &quot;PTN&quot;            &quot;PV&quot;             &quot;REDE&quot;           &quot;REPUBLICANOS&quot;  
-## [41] &quot;SD&quot;             &quot;SOLIEDARIEDADE&quot; &quot;UP&quot;</code></pre>
-</div>
-<div id="other-functions" class="section level2">
-<h2>Other functions</h2>
-<p><code>electionsBR</code> also includes functions to download data on valid and residual votes and on the number of seats under dispute in each election. The relevant functions are, respectively:</p>
-<pre><code>details_mun_zone_fed(year)
-details_mun_zone_local(year)</code></pre>
-<pre><code>seats_fed(year)
-seats_local(year)</code></pre>
-</div>
-<div id="optional-arguments" class="section level2">
-<h2>Optional arguments</h2>
+<div id="other-functionality" class="section level2">
+<h2>Other functionality</h2>
+<p>The <code>electionsBR</code> package also includes additional
+functionality that may be useful for users. For example, the
+<code>uf_br</code> function returns a <code>character</code> vector with
+a list of state abbreviations:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uf_br</span>()</span></code></pre></div>
+<p>To obtain a list of party abbreviations, use:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parties_br</span>(year)</span></code></pre></div>
+<p>In recent years, the TSE has made available data on presidential
+elections in separate files (indicated by the <code>BR</code> or
+<code>_BR</code> suffix). To download these files, use the
+<code>br_archive</code> argument as follows:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download electoral results for 2014 federal elections</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_tse</span>(<span class="at">year =</span> <span class="dv">2014</span>, <span class="at">type =</span> <span class="st">&quot;vote_mun_zone&quot;</span>, <span class="at">br_archive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>To obtain the TSE’s official README files that describe the variables
+in each type of electoral data, make sure to set <code>readme_pdf</code>
+to <code>TRUE</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download candidates&#39; social media information for 2022 elections</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_tse</span>(<span class="at">year =</span> <span class="dv">2014</span>, <span class="at">type =</span> <span class="st">&quot;social_media&quot;</span>, <span class="at">readme_pdf =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <div id="exporting-brazilian-electoral-data" class="section level3">
 <h3>Exporting Brazilian electoral data</h3>
-<p>Most <code>electionsBR</code>’s functions accept an <code>export</code> argument (<code>logical</code>, must be <code>TRUE</code> or <code>FALSE</code>; defaults to the latter) controlling whether the functions should export the retrieved data to <a href="https://www.stata.com/">Stata</a> and <a href="https://www.ibm.com/analytics/us/en/technology/spss/">SPSS</a> files or not.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>df &lt;-<span class="st"> </span><span class="kw">party_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">export =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p>Most <code>electionsBR</code>’s functions accept an
+<code>export</code> argument (<code>logical</code>, must be
+<code>TRUE</code> or <code>FALSE</code>; defaults to the latter) that
+controls whether the functions should export the retrieved data to <a href="https://www.stata.com/">Stata</a> and <a href="https://www.ibm.com/spss">SPSS</a> files or not.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_tse</span>(<span class="dv">2010</span>, <span class="at">export =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 <div id="removing-utf-8-special-characters-from-texts" class="section level3">
 <h3>Removing UTF-8 special characters from texts</h3>
-<p>By default, <code>electionsBR</code>’s functions maintain data’s original encoding (<code>Latin-1</code>) in special characters. To convert strings to <code>ASCII</code>, set the <code>ascii</code> argument to <code>TRUE</code>.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>df &lt;-<span class="st"> </span><span class="kw">candidate_fed</span>(<span class="dv">2010</span>, <span class="dt">ascii =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
-<p>In Mac computers, this option may cause errors (or may retrieve incomplete data for the 2016 elections). To avoid them, you may use the <code>encoding</code> optional argument as follows:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>df &lt;-<span class="st"> </span><span class="kw">candidate_fed</span>(<span class="dv">2010</span>, <span class="dt">ascii =</span> <span class="ot">TRUE</span>, <span class="dt">encoding =</span> <span class="st">&quot;Latin-1&quot;</span>)</span></code></pre></div>
-<p><code>encoding</code> may also be <code>UTF-8</code> or other valid encodings.</p>
+<p>By default, <code>electionsBR</code>’s functions maintain original
+encoding (<code>Latin-1</code>) in special characters. To convert
+strings to <code>ASCII</code>, set the <code>ascii</code> argument to
+<code>TRUE</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_tse</span>(<span class="dv">2010</span>, <span class="at">ascii =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>Using Mac OS, this option may cause errors (or may retrieve
+incomplete data for the 2016 elections). To avoid these issues, use the
+<code>encoding</code> optional argument as follows:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_tse</span>(<span class="dv">2010</span>, <span class="at">ascii =</span> <span class="cn">TRUE</span>, <span class="at">encoding =</span> <span class="st">&quot;Latin-1&quot;</span>)</span></code></pre></div>
+<p><code>encoding</code> may also be set to <code>UTF-8</code> or other
+valid encodings.</p>
 </div>
 <div id="filtering-results-by-state" class="section level3">
 <h3>Filtering results by state</h3>
-<p>Sometimes, getting state electoral data, and not for the whole country, is what one needs. To achieve this, use the <code>uf</code> optional argument (available in most functions):</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="co"># Electoral results for the 2010 federal elections in Sao Paulo (SP)</span></span>
-<span id="cb24-2"><a href="#cb24-2"></a>df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">uf =</span> <span class="st">&quot;SP&quot;</span>)</span>
-<span id="cb24-3"><a href="#cb24-3"></a></span>
-<span id="cb24-4"><a href="#cb24-4"></a><span class="co"># Electoral results for the 2010 federal elections in Minas Gerais (MS)</span></span>
-<span id="cb24-5"><a href="#cb24-5"></a>df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">uf =</span> <span class="st">&quot;mg&quot;</span>)</span>
-<span id="cb24-6"><a href="#cb24-6"></a></span>
-<span id="cb24-7"><a href="#cb24-7"></a><span class="co"># Electoral results for the 2010 federal elections in RS, SC, and PR</span></span>
-<span id="cb24-8"><a href="#cb24-8"></a>df &lt;-<span class="st"> </span><span class="kw">vote_mun_zone_fed</span>(<span class="dv">2010</span>, <span class="dt">uf =</span> <span class="kw">c</span>(<span class="st">&quot;RS&quot;</span>, <span class="st">&quot;SC&quot;</span>, <span class="st">&quot;PR&quot;</span>))</span></code></pre></div>
-<p>Notice that the input must be a <code>character</code> vector – with case insensitive state abbreviations (MG, Mg, mG, and mg are all equally valid inputs).</p>
+<p>Sometimes, getting state electoral data, and not for the whole
+country, is what one needs. To achieve this, use the <code>uf</code>
+optional argument (available in most functions):</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Electoral results for the 2010 federal elections in Sao Paulo (SP)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_tse</span>(<span class="dv">2010</span>, <span class="at">uf =</span> <span class="st">&quot;SP&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>http<span class="sc">:</span><span class="er">//</span>www.tse.jus.br<span class="sc">/</span>eleicoes<span class="sc">/</span>estatisticas<span class="sc">/</span>repositorio<span class="sc">-</span>de<span class="sc">-</span>dados<span class="sc">-</span>eleitorais</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Electoral results for the 2010 federal elections in Minas Gerais (MS)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_tse</span>(<span class="dv">2010</span>, <span class="at">uf =</span> <span class="st">&quot;mg&quot;</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Electoral results for the 2010 federal elections in RS, SC, and PR</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">elections_tse</span>(<span class="dv">2010</span>, <span class="at">uf =</span> <span class="fu">c</span>(<span class="st">&quot;RS&quot;</span>, <span class="st">&quot;SC&quot;</span>, <span class="st">&quot;PR&quot;</span>))</span></code></pre></div>
+<p>Notice that the input must be a <code>character</code> vector – with
+case insensitive state abbreviations (MG, Mg, mG, and mg are all equally
+valid inputs).</p>
 </div>
 </div>
-<div id="a-complete-list-of-functions" class="section level2">
-<h2>A complete list of functions</h2>
+<div id="how-elections-in-brazil-work" class="section level2">
+<h2>How Elections in Brazil Work</h2>
+<p>All the data retrieved by <code>electionsBR</code> is made available
+online by the <a href="https://international.tse.jus.br/en">Brazilian
+Superior Electoral Court (TSE)</a>. As stated on the <a href="https://international.tse.jus.br/en">English version of the TSE
+website</a>, elections in Brazil are organized in the following way:</p>
 <ul>
-<li><code>candidate_fed()</code></li>
-<li><code>candidate_local()</code></li>
-<li><code>details_mun_zone_fed()</code></li>
-<li><code>details_mun_zone_local()</code></li>
-<li><code>legend_fed()</code></li>
-<li><code>legend_local()</code></li>
-<li><code>legislative_mun_vote()</code></li>
-<li><code>legislative_state_vote()</code></li>
-<li><code>parties_br()</code></li>
-<li><code>party_mun_zone_fed()</code></li>
-<li><code>party_mun_zone_local()</code></li>
-<li><code>president_mun_vote()</code></li>
-<li><code>president_state_vote()</code></li>
-<li><code>seats_fed()</code></li>
-<li><code>seats_local()</code></li>
-<li><code>uf_br()</code></li>
-<li><code>vote_mun_zone_fed()</code></li>
-<li><code>vote_mun_zone_local()</code></li>
-<li><code>voter_affiliation()</code></li>
-<li><code>voter_profile()</code></li>
+<li><p>Federal elections and state elections are conducted
+simultaneously, including the election of the president and vice
+president, senators and alternates, governors and vice governors,
+federal deputies, and state deputies. Two years later, municipal
+elections are held for mayors, vice mayors, and city councils. It is
+important to note that the distinction is based on the federal level,
+not on the branches of government. The executive and legislative
+representatives are elected at the same time.</p></li>
+<li><p>In the case of elections for president and vice president,
+governor and vice governor, senator and alternates, and mayor and vice
+mayor, the majoritarian system is used, where the candidate with the
+most votes is elected. If none of the candidates for president,
+governor, or mayor in a municipality with over 200,000 inhabitants
+reaches an absolute majority of valid votes, a second round will be held
+with the two most voted candidates.</p></li>
+<li><p>For city council elections, state deputies, and federal deputies,
+the proportional criterion is used, which takes into account not only
+the votes received by the candidate but also the votes received by their
+party. Therefore, the candidate with the highest number of votes may not
+always be elected. The allocation of seats depends on the performance of
+the entire group of candidates from the party or alliance.</p></li>
 </ul>
-</div>
-<div id="elections-in-brazil" class="section level2">
-<h2>Elections in Brazil</h2>
-<p>All the data retrieved by <code>electionsBR</code> is made available online by the <a href="http://english.tse.jus.br/the-electoral-justice/the-electoral-justice-1/the-electoral-justice">Brazilian Superior Electoral Court (TSE)</a>. As state in the <a href="http://english.tse.jus.br/the-brazilian-electoral-system/elections/elections">English version of the TSE website</a>, elections in Brazil are organized in the following way:</p>
-<blockquote>
-<p>Are carried out together the federal elections and the state elections, for president and vice president, senator and alternates, governor and vice governor, federal deputies and state deputies. Two years later, will be municipal elections, of mayor and vice mayor and city councils. Note that the distinguishing criterion is by federal level and not by powers – the representatives from the executive and legislative are elected at the same time.</p>
-</blockquote>
-<blockquote>
-<p>In case of elections for president and vice president, governor and vice governor, senator and alternates and mayor and vice mayor, the system used is the majoritary, in which the most voted candidate will be elected. If none of candidates for president, governor or mayor from a municipality over 200,000 habitants reach the absolute majority of the valid votes, will be convened the second round with the two most voted.</p>
-</blockquote>
-<blockquote>
-<p>Now for the city council elections and state deputy and federal deputy, the criterion is proportional, which considers not only the candidate votes, but also his party’s votes. Hence, not always the best voted candidate will be elected. The filling of vacancies will depend on the performance of the whole group of candidates of the party or alliance.</p>
-</blockquote>
 <div id="official-documentation" class="section level3">
 <h3>Official documentation</h3>
-<p><code>electionsBR</code> internal documentation is entirely based on the official documentation provided by the TSE in the <a href="http://www.tse.jus.br/eleicoes/estatisticas/repositorio-de-dados-eleitorais">Repositorio de Dados Eleitorais</a>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>The internal documentation of the <code>electionsBR</code> package is
+based entirely on the official documentation provided by the TSE in the
+<a href="https://dadosabertos.tse.jus.br/">Repositório de Dados
+Eleitorais</a>. To access the documentation for each type of electoral
+data, set the <code>readme_pdf</code> argument in the
+<code>elections_tse</code> to <code>TRUE</code> and the package will
+save the relevant documentation in PDF format.</p>
 </div>
 </div>
 <div id="disclaimer" class="section level2">
 <h2>Disclaimer</h2>
-<p>The <code>electionsBR</code> package does not modify nor filter the data provided by the TSE – despite its many problems.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> Additionally, users must be aware that the TSE updates its databases frequently, so it is important to register when a version of the electoral data is used. In any case, we are not responsible for problems with the data users may find.</p>
+<p>The <code>electionsBR</code> package does not modify or filter the
+data provided by the TSE. Additionally, users must be aware that the TSE
+updates its databases frequently, so it is important to note the version
+of the electoral data used. However, we are not responsible for any
+issues with the data that users may encounter.</p>
 </div>
 <div id="how-to-cite" class="section level2">
 <h2>How to cite</h2>
 <p>To cite <code>electionsBR</code> in publications, please use:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">citation</span>(<span class="st">&quot;electionsBR&quot;</span>)</span></code></pre></div>
-<pre><code>## 
-## To cite electionsBR in publications, please use:
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">citation</span>(<span class="st">&quot;electionsBR&quot;</span>)</span></code></pre></div>
+<pre><code>## To cite package &#39;electionsBR&#39; in publications use:
 ## 
 ##   Meireles, Fernando; Silva, Denisson; Costa, Beatriz. (2016).
 ##   electionsBR: R functions to download and clean Brazilian electoral
@@ -527,14 +564,8 @@ seats_local(year)</code></pre>
 ##     author = {Fernando Meireles and Denisson Silva and Beatriz Costa},
 ##     year = {2016},
 ##     url = {http://electionsbr.com/},
+##     encoding = {UTF-8},
 ##   }</code></pre>
-</div>
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>To access the documentation for each type of electoral data, it is necessary to download and open the correspondent compressed files (<code>.zip</code>).<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>The only exceptions are the <code>president_</code> and <code>legislative_</code> functions, which aggregates electoral data in a different unit than in the original files.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
 
 

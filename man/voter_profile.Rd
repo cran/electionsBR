@@ -4,41 +4,22 @@
 \alias{voter_profile}
 \title{Download data on the voters' profile}
 \usage{
-voter_profile(
-  year,
-  ascii = FALSE,
-  encoding = "windows-1252",
-  export = FALSE,
-  temp = TRUE
-)
+voter_profile(year, encoding = "windows-1252", temp = TRUE, readme_pdf = FALSE)
 }
 \arguments{
-\item{year}{Election year (\code{integer}). For this function, the following years are available: 1994, 1996, 1998,
-2000, 2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016, 2018 and 2020.}
-
-\item{ascii}{(\code{logical}). Should the text be transformed from Latin-1 to ASCII format?}
+\item{year}{Election year (\code{integer}). For this function, the following years are available: 1998,
+2000, 2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016, 2018, 2020 and 2022.}
 
 \item{encoding}{Data original encoding (defaults to 'windows-1252'). This can be changed to avoid errors
-when \code{ascii = TRUE}.}
-
-\item{export}{(\code{logical}). Should the downloaded data be saved in .dta and .sav in the current directory?}
+when \code{ascii = TRUE}.
+#'}
 
 \item{temp}{(\code{logical}). If \code{TRUE}, keep the temporary compressed file for future use (recommended)}
+
+\item{readme_pdf}{original readme}
 }
 \value{
-\code{voter_profile()} returns a \code{data.frame} with the following variables:
-
-\itemize{
-  \item PERIODO: Election year.
-  \item UF: Units of the Federation's acronym in which occurred the election.
-  \item MUNICIPIO: Municipality name.
-  \item COD_MUNICIPIO_TSE: Municipal's Supreme Electoral Court code (number).
-  \item NR_ZONA: Electoral zone's Supreme Electoral Court code (number).
-  \item SEXO: Voters' sex.
-  \item FAIXA_ETARIA: Voters' age group.
-  \item GRAU_DE_ESCOLARIDADE: Voters' education degree.
-  \item QTD_ELEITORES_NO_PERFIL: Absolute number of voters.
-}
+\code{voter_profile()} returns a \code{data.frame}.
 }
 \description{
 \code{voter_profile()} downloads and cleans data on the voters' profile aggregated by state, city and electoral zone.
